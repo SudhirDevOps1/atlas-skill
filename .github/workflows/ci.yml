@@ -60,11 +60,12 @@ jobs:
 
       - name: Project setup smoke test
         run: |
-          mkdir -p .ci-project
-          node scripts/setup-project.mjs --project .ci-project
-          test ! -f .ci-project/opencode.json
-          node scripts/setup-project.mjs --project .ci-project --apply
-          test -f .ci-project/opencode.json
-          test -f .ci-project/.opencode/agents/api-architect.md
-          test -f .ci-project/.agents/agents/api-architect.md
-          test -f .ci-project/.agents/skills/atlas-project-architect/SKILL.md
+          project="$(mktemp -d "${RUNNER_TEMP}/atlas-ci-project.XXXXXX")"
+          trap 'rm -rf "$project"' EXIT
+          node scripts/setup-project.mjs --project "$project"
+          test ! -f "$project/opencode.json"
+          node scripts/setup-project.mjs --project "$project" --apply
+          test -f "$project/opencode.json"
+          test -f "$project/.opencode/agents/api-architect.md"
+          test -f "$project/.agents/agents/api-architect.md"
+          test -f "$project/.agents/skills/atlas-project-architect/SKILL.md"
