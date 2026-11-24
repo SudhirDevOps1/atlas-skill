@@ -4,6 +4,23 @@ All notable changes to this repository.
 
 ## [Unreleased]
 
+### Added
+
+- `package.json` — repository SSOT (`version: 1.0.0`), zero dependencies, scripts wired to the bundled tool.
+- `tests/version.test.mjs` — 15 black-box tests over the real CLI.
+- `.github/workflows/ci.yml` — syntax, tests, `version:verify`, and a "sync is a no-op" gate on Node 20 and 22.
+- Memory set: `AGENTS.md`, `MEMORY.md`, `HANDOFF.md`, `TASKS.md`, `ASSUMPTIONS.md`.
+- `docs/PROJECT-STATUS.md`, `docs/TESTING.md`.
+
+### Changed
+
+- `README.md` — version badge (now a sync target), updated repo map, "runs on ATLAS" section.
+
+### Verified
+
+- `node --test tests/version.test.mjs` → 14 passed, 1 skipped, 0 failed.
+- `version:verify` → no drift; `sync` twice → no diff.
+
 ## [1.0.0] - 2026-11-24
 
 ### Added

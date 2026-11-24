@@ -4,10 +4,11 @@
 
 <br><br>
 
+[![Version](https://img.shields.io/badge/version-1.0.0-E8A33D?style=flat-square)](#versioning--one-source-of-truth)
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-2F81F7?style=flat-square)](#versioning--one-source-of-truth)
-[![Phase references](https://img.shields.io/badge/phase%20references-11-6B7C8F?style=flat-square)](#repo-map)
-[![Version tool](https://img.shields.io/badge/version%20tool-tested-E8A33D?style=flat-square)](#status)
+[![Tests](https://img.shields.io/badge/tests-15-0F766E?style=flat-square)](docs/TESTING.md)
+[![References](https://img.shields.io/badge/references-11-6B7C8F?style=flat-square)](#repo-map)
 
 ### Turn “build me this” into a project that survives week two.
 
@@ -108,14 +109,35 @@ Bump is transactional: a failed write restores every file it already touched and
 ```text
 .
 ├── ATLAS-MASTER-PROMPT.md          full rulebook
+├── package.json                    SSOT (version) + scripts
 ├── assets/banner.svg
-└── atlas-project-architect/        the installable skill
-    ├── SKILL.md                    trigger + core loop
-    ├── README.md                   install notes
-    ├── references/                 00 → 10, one per phase
-    ├── assets/templates/           AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · PROJECT-INPUT
-    └── scripts/version.mjs         SSOT tool
+├── atlas-project-architect/        the installable skill
+│   ├── SKILL.md                    trigger + core loop
+│   ├── README.md                   install notes
+│   ├── references/                 00 → 10, one per phase
+│   ├── assets/templates/           AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · PROJECT-INPUT
+│   └── scripts/version.mjs         SSOT tool
+├── tests/version.test.mjs          15 black-box tests
+├── docs/                           PROJECT-STATUS · TESTING
+├── .github/workflows/ci.yml        Node 20 + 22, tests, drift gate
+└── AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS
 ```
+
+---
+
+## This repo runs on ATLAS
+
+The skill is applied to its own repository — not just documented:
+
+| Practice | Where |
+|---|---|
+| One source of truth for the version | `package.json` → `version:sync` regenerates the badge, changelog, docs and memory lines |
+| Tests before claims | `tests/version.test.mjs`, 15 cases, run in CI on Node 20 and 22 |
+| Drift gate | CI fails if any generated surface disagrees with the SSOT |
+| Continuity | `AGENTS.md` · `MEMORY.md` · `HANDOFF.md` · `TASKS.md` · `ASSUMPTIONS.md` |
+| Honest status | [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md) lists what is not built |
+
+A different agent can pick this up from `HANDOFF.md` alone.
 
 ---
 
@@ -123,7 +145,7 @@ Bump is transactional: a failed write restores every file it already touched and
 
 **Tested**
 
-- `version.mjs` — bump / set / sync / verify / show, `--dry-run`, drift detection, rollback on write failure, BOM preservation, both SSOT modes.
+- `version.mjs` — 15 black-box tests: bump / set / sync / verify / show, `--dry-run`, drift detection, rollback on write failure, BOM preservation, both SSOT modes. Run in CI on Node 20 and 22.
 
 **Not tested**
 
