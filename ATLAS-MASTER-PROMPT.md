@@ -618,16 +618,19 @@ pnpm run version:bump patch && pnpm run version:sync
 
 Helpers (optional): `pnpm run version:tag` (annotated git tag `vX.Y.Z`), `pnpm run version:changelog` (prepend entry), `pnpm run version:show` (print channel + version + next suggestions).
 
-## 14.4 Flags (every script must support)
+## 14.4 Flags
 
-| Flag | Effect |
-|---|---|
-| `--dry-run` | print planned changes, write nothing |
-| `--json` | machine-readable output for CI |
-| `--no-git` | skip commit/tag |
-| `--no-changelog` | skip changelog edit |
-| `--allow-downgrade` | required for any version decrease |
-| `--force-channel <ch>` | only with `version:set` |
+| Flag | Effect | Bundled script |
+|---|---|---|
+| `--dry-run` | print planned changes, write nothing | yes |
+| `--json` | machine-readable output for CI | yes |
+| `--no-changelog` | skip changelog edit | yes |
+| `--allow-downgrade` | required for any version decrease | yes |
+| `--no-git` | skip commit/tag | n/a — the bundled script never touches git |
+| `--force-channel <ch>` | only with `version:set` | optional — express the channel in `set`, e.g. `set 2.0.0-rc.1` |
+
+If you extend the bundled script, keep the semantics above and add a test per flag. Do
+not document a flag you have not implemented.
 
 Exit codes: `0` success · `1` validation/drift failure · `2` usage error · `3` file-write failure (and no partial writes).
 

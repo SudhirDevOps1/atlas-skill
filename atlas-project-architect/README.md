@@ -1,8 +1,10 @@
 # ATLAS Project Architect — portable skill
 
-A process skill for any coding agent. It turns "build me this" into a researched, secure, tested, documented, deployable project — with a single source of truth for versioning.
+A process skill for any coding agent. It turns "build me this" into a researched,
+secure, tested, documented, deployable project — with a single source of truth for
+versioning and a handoff another agent can continue.
 
-```
+```text
 atlas-project-architect/
 ├── SKILL.md                  # the skill (loaded when triggered)
 ├── references/               # phase detail, loaded on demand
@@ -12,30 +14,49 @@ atlas-project-architect/
 
 ## Install
 
-### OpenCode
-```bash
-# project-scoped
-mkdir -p .opencode/skills
-cp -r atlas-project-architect .opencode/skills/
+Copy this folder into the skills directory your agent reads. The folder name matters —
+it matches `name:` in the front matter.
 
-# or global
-cp -r atlas-project-architect ~/.config/opencode/skills/
+| Agent | Project | Global |
+|---|---|---|
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| Codex | `.agents/skills/` | `~/.agents/skills/` |
+| Cursor | `.agents/skills/` | `~/.cursor/skills/` |
+| Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` |
+| OpenCode | `.agents/skills/` or `.opencode/skills/` | `~/.config/opencode/skills/` |
+| GitHub Copilot | `.agents/skills/` | `~/.copilot/skills/` |
+
+```bash
+# from a clone of the repository
+node scripts/install-skill.mjs --agent claude-code --scope global
 ```
 
-### Claude Code
+Or by hand:
+
 ```bash
 mkdir -p ~/.claude/skills
-cp -r atlas-project-architect ~/.claude/skills/
+cp -R atlas-project-architect ~/.claude/skills/
 ```
 
-### Cursor / Windsurf / other agents
-Point the agent's rules file at `SKILL.md` (e.g. `.cursor/rules/atlas.mdc` containing `@atlas-project-architect/SKILL.md`), or paste `SKILL.md` into the system prompt. References stay on disk and are read when needed.
+Every agent path, the chat-UI fallback, updating and troubleshooting:
+[`INSTALL.md`](../INSTALL.md) · [`docs/AGENT-COMPATIBILITY.md`](../docs/AGENT-COMPATIBILITY.md).
 
-### Any chat UI (ChatGPT, Gemini, Claude web)
-Paste the contents of `SKILL.md` as the first message / custom instruction. Add a reference file only when the conversation reaches that phase.
+Start a new session after installing — agents scan the skills directory at startup.
 
-### With the master prompt
-This skill is the operational core. The full `ATLAS-MASTER-PROMPT.md` is the expanded version — use it when you want the complete rulebook in one paste; use the skill when you want lower context cost and on-demand loading.
+## What to give the AI
+
+The skill supplies the process; you supply the project. Answering the six questions in
+`assets/templates/PROJECT-INPUT.md` removes most of the guesswork:
+
+```text
+GOAL · USERS · PLATFORM · DATA · BUDGET · DEADLINE
+```
+
+Do not paste the references up front. `SKILL.md` loads one phase at a time; pasting all
+eleven costs 10–15× more context and produces a worse result.
+
+For a chat UI with no filesystem, paste `SKILL.md` as the first message. Use
+`ATLAS-MASTER-PROMPT.md` when you want the whole rulebook in one paste.
 
 ## Version tool
 
@@ -45,7 +66,7 @@ Copy `scripts/version.mjs` into the target project's `scripts/` folder and add:
 {
   "scripts": {
     "version:bump": "node scripts/version.mjs bump",
-    "version:set":  "node scripts/version.mjs set",
+    "version:set": "node scripts/version.mjs set",
     "version:sync": "node scripts/version.mjs sync",
     "version:verify": "node scripts/version.mjs verify"
   }
@@ -60,7 +81,8 @@ pnpm run version:sync
 pnpm run version:verify
 ```
 
-It is dependency-free (Node 18+), atomic, idempotent, and skips surfaces the project doesn't have.
+It is dependency-free (Node 18+), atomic, idempotent, and skips surfaces the project
+does not have. A failed write restores every file it already touched.
 
 ## Context cost
 
@@ -69,3 +91,13 @@ It is dependency-free (Node 18+), atomic, idempotent, and skips surfaces the pro
 - One reference: ~1–2k tokens, only when that phase is active.
 
 That is roughly 10–15% of the cost of pasting the full master prompt on every turn.
+
+## Limits
+
+- Prompt-level behaviour. No automated eval suite exists; the version tool and installer
+  are the only tested code.
+- No `--all` monorepo iteration in the bundled version tool — run it per package or use
+  `pnpm -r run version:sync`.
+- The bundled tool never commits or tags. Git operations stay yours.
+
+MIT licensed. Security policy: [`SECURITY.md`](../SECURITY.md).

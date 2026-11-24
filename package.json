@@ -1,16 +1,18 @@
 {
   "name": "atlas-skill",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.1.0",
   "description": "ATLAS - one master prompt plus one portable project-architect skill for coding agents.",
   "type": "module",
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "check": "node --check atlas-project-architect/scripts/version.mjs",
-    "test": "node --test tests/version.test.mjs",
-    "verify": "node --check atlas-project-architect/scripts/version.mjs && node --test tests/version.test.mjs && node atlas-project-architect/scripts/version.mjs verify",
+    "check": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs",
+    "test": "node --test tests/version.test.mjs tests/install.test.mjs",
+    "verify": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs && node --test tests/version.test.mjs tests/install.test.mjs && node atlas-project-architect/scripts/version.mjs verify",
+    "install:list": "node scripts/install-skill.mjs --list",
+    "install:skill": "node scripts/install-skill.mjs",
     "version:show": "node atlas-project-architect/scripts/version.mjs show",
     "version:bump": "node atlas-project-architect/scripts/version.mjs bump",
     "version:set": "node atlas-project-architect/scripts/version.mjs set",

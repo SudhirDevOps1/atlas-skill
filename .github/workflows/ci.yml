@@ -32,10 +32,12 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Syntax check
-        run: node --check atlas-project-architect/scripts/version.mjs
+        run: |
+          node --check atlas-project-architect/scripts/version.mjs
+          node --check scripts/install-skill.mjs
 
       - name: Tests
-        run: node --test tests/version.test.mjs
+        run: node --test tests/version.test.mjs tests/install.test.mjs
 
       - name: Version SSOT is in sync
         run: node atlas-project-architect/scripts/version.mjs verify
@@ -44,3 +46,9 @@ jobs:
         run: |
           node atlas-project-architect/scripts/version.mjs sync
           git diff --exit-code
+
+      - name: Installer smoke test
+        run: |
+          node scripts/install-skill.mjs --dest .ci-skills
+          test -f .ci-skills/atlas-project-architect/SKILL.md
+          test -f .ci-skills/atlas-project-architect/references/07-versioning-ssot.md

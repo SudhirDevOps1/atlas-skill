@@ -4,11 +4,12 @@
 
 <br><br>
 
-[![Version](https://img.shields.io/badge/version-1.0.0-E8A33D?style=flat-square)](#versioning--one-source-of-truth)
+[![Version](https://img.shields.io/badge/version-1.1.0-E8A33D?style=flat-square)](#versioning--one-source-of-truth)
+[![License](https://img.shields.io/badge/license-MIT-2F81F7?style=flat-square)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-2F81F7?style=flat-square)](#versioning--one-source-of-truth)
-[![Tests](https://img.shields.io/badge/tests-15-0F766E?style=flat-square)](docs/TESTING.md)
-[![References](https://img.shields.io/badge/references-11-6B7C8F?style=flat-square)](#repo-map)
+[![Tests](https://img.shields.io/badge/tests-23-0F766E?style=flat-square)](docs/TESTING.md)
+[![Agents](https://img.shields.io/badge/agents-60%2B-6B7C8F?style=flat-square)](docs/AGENT-COMPATIBILITY.md)
 
 ### Turn “build me this” into a project that survives week two.
 
@@ -20,40 +21,63 @@ A process harness for coding agents — not a code template, an order of operati
 
 ---
 
-## What's inside
+## What it is
 
-| Artifact | What it is | When to use it |
-|---|---|---|
-| **`ATLAS-MASTER-PROMPT.md`** | The full rulebook — 34 sections + appendix, 1,400 lines | One paste into a capable model when you want the complete contract |
-| **`atlas-project-architect/`** | The portable skill — `SKILL.md` (147 lines) + 11 phase references + 6 templates | Installed into an agent, so it loads only the phase it needs |
-| **`scripts/version.mjs`** | Zero-dependency SSOT version tool | Any project that ships more than once |
+A skill you install once. After that, every project request — new app, existing repo,
+broken build, redesign, audit, release — runs through the same loop: inspect the real
+files, verify claims instead of trusting them, plan, build small, prove with a command,
+record, hand off.
 
-The skill is the operational core. The master prompt is the same thinking, expanded.
+It is built for the failure mode that actually bites: an agent that produces an
+impressive first hour and an unmaintainable second week. So it refuses to claim “done”
+without running something, keeps one source of truth for the version, and leaves a
+handoff a different agent can continue from.
+
+**It is not** a code generator, a framework, a starter template, or a prompt that makes a
+model smarter. It is the order of operations plus the artefacts that make the result
+checkable.
 
 ---
 
-## Quick start
-
-### 1 · Install the skill
-
-```powershell
-# OpenCode — global
-Copy-Item -Recurse .\atlas-project-architect "$env:USERPROFILE\.config\opencode\skills\"
-
-# OpenCode — one project only
-Copy-Item -Recurse .\atlas-project-architect .\.opencode\skills\
-```
+## Install
 
 ```bash
-# Claude Code
-cp -r atlas-project-architect ~/.claude/skills/
+git clone https://github.com/SudhirDevOps1/atlas-skill.git
+cd atlas-skill
+node scripts/install-skill.mjs --agent claude-code --scope global
 ```
 
-**Cursor / Windsurf** — point `.cursor/rules/atlas.mdc` at `@atlas-project-architect/SKILL.md`.
+Replace `claude-code` with `codex`, `cursor`, `antigravity`, `opencode`, `copilot`,
+`gemini-cli`, `windsurf`, `cline`, `roo`, `kilo`, `amp`, `warp`, `zed`, `droid`,
+`qwen`, `kiro`, `continue`, `openhands`, or `universal`. Run
+`node scripts/install-skill.mjs --list` to see the paths.
 
-**Chat UIs** — paste `SKILL.md` as the first message; paste `ATLAS-MASTER-PROMPT.md` when you want the whole rulebook.
+| Agent | Project | Global |
+|---|---|---|
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| Codex | `.agents/skills/` | `~/.agents/skills/` |
+| Cursor | `.agents/skills/` | `~/.cursor/skills/` |
+| Antigravity | `.agents/skills/` | `~/.gemini/config/skills/` |
+| OpenCode | `.agents/skills/` | `~/.config/opencode/skills/` |
+| GitHub Copilot | `.agents/skills/` | `~/.copilot/skills/` |
 
-### 2 · Ask for a project
+Full matrix, chat-UI fallback, updating and troubleshooting:
+**[`INSTALL.md`](INSTALL.md)** · per-agent paths and sources:
+**[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md)**
+
+### What to give the AI
+
+| You give | You get |
+|---|---|
+| The task | A brief with guessed assumptions |
+| Task + `PROJECT-INPUT.md` answers | A brief with far fewer guesses |
+| Task + an existing repo | Brownfield audit, then a plan |
+| Task + `ATLAS-MASTER-PROMPT.md` | The full rulebook in context — highest token cost |
+
+The skill loads one reference at a time on purpose. Pasting all eleven costs 10–15× more
+context and makes the result worse, not better.
+
+### Then just ask
 
 ```text
 > ye app banao: <idea>
@@ -79,13 +103,28 @@ flowchart LR
   F -.->|fail| E
 ```
 
-Every claim of “done” carries a command and its real output. If it wasn’t run, it says **NOT RUN** — there is no third state.
+Every claim of “done” carries a command and its real output. If it wasn’t run, it says
+**NOT RUN** — there is no third state.
+
+---
+
+## What's inside
+
+| Artifact | What it is | When to use it |
+|---|---|---|
+| **`atlas-project-architect/`** | The skill — `SKILL.md` + 11 phase references + 6 templates + the version tool | Installed into an agent; loads only the phase it needs |
+| **`ATLAS-MASTER-PROMPT.md`** | The full rulebook — 34 sections + appendix | One paste into a capable model when you want the complete contract |
+| **`scripts/install-skill.mjs`** | Zero-dependency installer for 20 agents | Putting the skill where your agent reads it |
+| **`scripts/version.mjs`** (inside the skill) | Zero-dependency SSOT version tool | Any project that ships more than once |
+
+The skill is the operational core. The master prompt is the same thinking, expanded.
 
 ---
 
 ## Versioning — one source of truth
 
-`package.json#version` (or root `version.json`) is the **only** hand-edited version. Every other surface is generated and marked `AUTO-GENERATED — DO NOT EDIT`.
+`package.json#version` (or root `version.json`) is the **only** hand-edited version.
+Every other surface is generated and marked `AUTO-GENERATED — DO NOT EDIT`.
 
 | Command | Effect |
 |---|---|
@@ -98,9 +137,15 @@ Every claim of “done” carries a command and its real output. If it wasn’t 
 | `version:sync` | regenerate every derived surface |
 | `version:verify` | CI gate — exit `1` on drift |
 
-**Synced surfaces:** app constant · `public/version.json` · README badge · changelog · docs front-matter · `index.html` meta · OpenAPI · Android `versionName`/`versionCode` · Tauri · Expo · Docker label · MEMORY / HANDOFF / status.
+**Synced surfaces:** app constant · `public/version.json` · README badge · changelog ·
+docs front matter · `index.html` meta · OpenAPI · Android `versionName`/`versionCode` ·
+Tauri · Expo · Docker label · MEMORY / HANDOFF / status.
 
-Bump is transactional: a failed write restores every file it already touched and exits `3`.
+Bump is transactional: a failed write restores every file it already touched and exits
+`3`. A project without `src/` or `public/` is not given empty scaffolding.
+
+Monorepos: each publishable package keeps its own SSOT. `version:sync --all` is not in
+the bundled script — run it per package, or use `pnpm -r run version:sync`.
 
 ---
 
@@ -109,19 +154,34 @@ Bump is transactional: a failed write restores every file it already touched and
 ```text
 .
 ├── ATLAS-MASTER-PROMPT.md          full rulebook
+├── INSTALL.md                      install in any agent
 ├── package.json                    SSOT (version) + scripts
 ├── assets/banner.svg
 ├── atlas-project-architect/        the installable skill
 │   ├── SKILL.md                    trigger + core loop
-│   ├── README.md                   install notes
 │   ├── references/                 00 → 10, one per phase
 │   ├── assets/templates/           AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · PROJECT-INPUT
 │   └── scripts/version.mjs         SSOT tool
-├── tests/version.test.mjs          15 black-box tests
-├── docs/                           PROJECT-STATUS · TESTING
+├── scripts/install-skill.mjs       installer for 20 agents
+├── tests/                          version.test.mjs · install.test.mjs
+├── docs/                           AGENT-COMPATIBILITY · PROJECT-STATUS · TESTING
+├── examples/                       greenfield · brownfield audit
 ├── .github/workflows/ci.yml        Node 20 + 22, tests, drift gate
-└── AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS
+└── AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · SECURITY
 ```
+
+---
+
+## Compatibility
+
+One `SKILL.md` folder works across agents that implement the
+[Agent Skills specification](https://agentskills.io). ATLAS uses only `name` +
+`description` front matter, relative file reads, and one plain Node script — no
+`allowed-tools`, no `context: fork`, no hooks, no MCP. That is deliberate: the skill
+behaves the same everywhere.
+
+Verified against the upstream path table on 2026-11-24:
+**[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md)**.
 
 ---
 
@@ -132,10 +192,11 @@ The skill is applied to its own repository — not just documented:
 | Practice | Where |
 |---|---|
 | One source of truth for the version | `package.json` → `version:sync` regenerates the badge, changelog, docs and memory lines |
-| Tests before claims | `tests/version.test.mjs`, 15 cases, run in CI on Node 20 and 22 |
+| Tests before claims | `tests/`, run in CI on Node 20 and 22 |
 | Drift gate | CI fails if any generated surface disagrees with the SSOT |
 | Continuity | `AGENTS.md` · `MEMORY.md` · `HANDOFF.md` · `TASKS.md` · `ASSUMPTIONS.md` |
 | Honest status | [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md) lists what is not built |
+| Case study | [`examples/brownfield-audit.md`](examples/brownfield-audit.md) |
 
 A different agent can pick this up from `HANDOFF.md` alone.
 
@@ -145,18 +206,25 @@ A different agent can pick this up from `HANDOFF.md` alone.
 
 **Tested**
 
-- `version.mjs` — 15 black-box tests: bump / set / sync / verify / show, `--dry-run`, drift detection, rollback on write failure, BOM preservation, both SSOT modes. Run in CI on Node 20 and 22.
+- `version.mjs` — 15 black-box tests: bump / set / sync / verify / show, `--dry-run`,
+  drift detection, rollback on write failure, BOM preservation, both SSOT modes.
+- `install-skill.mjs` — 8 tests: agent matrix, copy scope, overwrite guard, `--dry-run`,
+  project/global resolution, usage errors, self-overwrite guard.
+- Both run in CI on Node 20 and 22.
 
 **Not tested**
 
-- Skill behaviour is prompt-level. No automated eval suite has been run.
+- Skill behaviour is prompt-level. No automated eval suite exists.
 
-**Not implemented**
+**Deliberately absent**
 
-- `--all` monorepo iteration and `--force-channel` are specified in the master prompt but absent from the bundled script.
+- No application runtime, database, auth or hosting.
+- No PRD or design system in this repo — it ships the process that produces them.
 
 ---
 
 <div align="center">
-<sub>Personal repository · not a published package · no redistribution license granted</sub>
+
+<sub>MIT licensed · <a href="SECURITY.md">security policy</a> · not affiliated with any agent vendor</sub>
+
 </div>

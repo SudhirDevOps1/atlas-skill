@@ -1,58 +1,74 @@
 # HANDOFF — 2026-11-24
 
-Current version: 1.0.0
+Current version: 1.1.0
 
 ## State
 
-v1.0.0 is shipped and published. The repository is now managed by its own skill:
-single-source-of-truth versioning, a 15-test suite, CI on Node 20 and 22, and the
-memory set (AGENTS / MEMORY / HANDOFF / TASKS / ASSUMPTIONS / PROJECT-STATUS / TESTING).
+v1.1.0 is the public release. The repository is MIT licensed, installable in any agent
+that reads `SKILL.md`, and still managed by its own skill: one version SSOT, two tested
+CLIs, CI with a drift gate, and the memory set.
 
 ## Changed this session
 
-- `package.json` — added, `version: 1.0.0`, zero dependencies, scripts wired to the bundled tool.
-- `tests/version.test.mjs` — 15 black-box tests over the real CLI.
-- `.github/workflows/ci.yml` — syntax + tests + `version:verify` + "sync is a no-op" gate; actions pinned to verified SHAs.
-- `AGENTS.md`, `MEMORY.md`, `HANDOFF.md`, `TASKS.md`, `ASSUMPTIONS.md` — created.
-- `docs/PROJECT-STATUS.md`, `docs/TESTING.md` — created.
-- `README.md` — version badge added (now a sync target) and a "runs on ATLAS" note.
-- `CHANGELOG.md` — Unreleased section filled.
+- Repository visibility: private → **public**; topics added; description kept.
+- `LICENSE` — proprietary/all-rights-reserved → **MIT**.
+- `SECURITY.md` — private reporting via GitHub Security Advisories, scope, safe harbour.
+- `INSTALL.md` — install in Claude Code, Codex, Cursor, Antigravity, OpenCode, Copilot,
+  Gemini CLI, Cline, Windsurf, Roo, Kilo, Amp, Warp, Zed, Droid, Qwen, Kiro, Continue,
+  OpenHands, or any `SKILL.md` agent; chat-UI fallback; updating; uninstalling;
+  troubleshooting.
+- `docs/AGENT-COMPATIBILITY.md` — 60+ agent path matrix, upstream source, verification
+  date, feature-support table.
+- `scripts/install-skill.mjs` — zero-dependency installer with `--list`, `--agent`,
+  `--scope`, `--dest`, `--force`, `--dry-run`; overwrite and self-overwrite guards.
+- `tests/install.test.mjs` — 8 black-box tests.
+- `examples/greenfield.md`, `examples/brownfield-audit.md` — the process on an empty repo
+  and on this repository.
+- `README.md` — rewritten for a public audience.
+- `atlas-project-architect/README.md` — install matrix and limits.
+- `ATLAS-MASTER-PROMPT.md` §14.4 — flag table now shows what the bundled script actually
+  implements.
+- `package.json` — MIT, `check`/`test` cover both CLIs, installer scripts.
+- CI — syntax-checks both CLIs, runs both test files, smoke-tests the installer.
+- Removed every "personal / private / single owner / no redistribution" statement.
 
 ## Verified
 
 ```text
-Command: node --test tests/version.test.mjs
-Result:  14 passed, 1 skipped, 0 failed (4.7s)
+Command: node --test tests/version.test.mjs tests/install.test.mjs
+Result:  22 passed, 1 skipped, 0 failed (5.2s)
 Env:     Node 26.13.0, Windows 11, 2026-11-24
 Skip:    rollback test — directory permissions are not enforced on Windows
 ```
 
 ```text
 Command: node atlas-project-architect/scripts/version.mjs verify
-Result:  OK — 1.0.0 in sync (stable, code 10000900)
+Result:  OK — 1.1.0 in sync (stable, code 10100900)
 ```
 
 ```text
-Command: gh run view 45378930334
-Result:  success — verify (node 20) 10s, verify (node 22) 6s, 15/15 tests on Linux
-Env:     GitHub Actions, ubuntu-latest, 2026-11-24
+Command: node scripts/install-skill.mjs --list
+Result:  20 agents, project + global paths (source: vercel-labs/skills docs/agents.md)
 ```
+
+CI for this commit: recorded in `docs/PROJECT-STATUS.md`.
 
 ## Broken / failing
 
-Nothing known. First CI run `45378930334` was green on Node 20 and 22, with 15/15 tests
-on Linux (including the rollback case that skips on Windows).
+Nothing known.
 
 ## Next 3 actions
 
-1. Confirm the CI run is green on both Node versions.
-2. Decide `--all` for monorepos: implement or remove the claim.
-3. Add a small eval harness for skill behaviour, then cut `1.1.0`.
+1. Confirm the CI run for the public release is green on Node 20 and 22.
+2. Build the eval harness for skill behaviour: 3–5 prompts, rubric, recorded output.
+3. Re-check agent paths against vendor docs before the next release; update the
+   verification date in `docs/AGENT-COMPATIBILITY.md`.
 
 ## Do not change
 
-- `LICENSE` terms.
-- The `v1.0.0` tag and release.
+- `LICENSE` terms (MIT) without an explicit decision and a changelog entry.
+- The published tags and releases — `v1.0.0` and `v1.1.0` are immutable.
+- The installer's overwrite guard: no silent replacement without `--force`.
 - The `version.mjs` behaviour contract without updating tests and reference 07.
 
 ## Environment notes
@@ -60,3 +76,4 @@ on Linux (including the rollback case that skips on Windows).
 - Required env var NAMES: none.
 - Local machine: Node 26.13.0, pnpm 12.10.1, PowerShell 5.1 (writes UTF-8 BOM).
 - Windows quirk: `chmod` on directories is not enforced; the rollback test skips there.
+- Tests redirect "global" installs by overriding `USERPROFILE`/`HOME`.

@@ -2,23 +2,58 @@
 
 All notable changes to this repository.
 
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the
+project uses [Semantic Versioning](https://semver.org/). Versions are generated from
+`package.json#version` — see `version:sync`.
+
 ## [Unreleased]
+
+## [1.1.0] - 2026-11-24
+
+Public release. The repository is now installable in any agent that reads `SKILL.md`,
+and every "personal / private / no redistribution" statement is gone.
 
 ### Added
 
-- `package.json` — repository SSOT (`version: 1.0.0`), zero dependencies, scripts wired to the bundled tool.
-- `tests/version.test.mjs` — 15 black-box tests over the real CLI.
-- `.github/workflows/ci.yml` — syntax, tests, `version:verify`, and a "sync is a no-op" gate on Node 20 and 22.
-- Memory set: `AGENTS.md`, `MEMORY.md`, `HANDOFF.md`, `TASKS.md`, `ASSUMPTIONS.md`.
-- `docs/PROJECT-STATUS.md`, `docs/TESTING.md`.
+- `INSTALL.md` — install in Claude Code, Codex, Cursor, Antigravity, OpenCode, Copilot,
+  Gemini CLI, Cline, Windsurf, Roo, Kilo, Amp, Warp, Zed, Droid, Qwen, Kiro, Continue,
+  OpenHands, or any other `SKILL.md` agent. Includes the chat-UI fallback, updating,
+  uninstalling and troubleshooting.
+- `docs/AGENT-COMPATIBILITY.md` — full 60+ agent path matrix with the upstream source and
+  verification date, plus the feature-support table.
+- `scripts/install-skill.mjs` — zero-dependency installer: `--list`, `--agent`,
+  `--scope project|global`, `--dest`, `--force`, `--dry-run`. Refuses to overwrite an
+  existing copy without `--force` and refuses to install over its own source.
+- `tests/install.test.mjs` — 8 black-box tests for the installer.
+- `examples/greenfield.md`, `examples/brownfield-audit.md` — the process on an empty repo
+  and on this repository itself, with real numbers.
+- `SECURITY.md` — private reporting via GitHub Security Advisories, scope, safe harbour.
+- Repository self-management, carried over from the 1.0.0 follow-up: `package.json` as the
+  version SSOT, `tests/version.test.mjs` (15 tests), CI with a drift gate, and the memory
+  set (`AGENTS`, `MEMORY`, `HANDOFF`, `TASKS`, `ASSUMPTIONS`).
 
 ### Changed
 
-- `README.md` — version badge (now a sync target), updated repo map, "runs on ATLAS" section.
+- `LICENSE` — proprietary, all rights reserved → **MIT**.
+- `README.md` — rewritten for a public audience: install matrix, compatibility, honest
+  limits, no private-repo framing.
+- `atlas-project-architect/README.md` — install matrix and limits; the old
+  `.cursor/rules` advice is now a fallback, not the recommended path.
+- `ATLAS-MASTER-PROMPT.md` §14.4 — the flag table now states which flags the bundled
+  script implements instead of implying all of them.
+- `package.json` — `license: MIT`, `check`/`test` cover both CLIs.
+- CI — syntax-checks both CLIs, runs both test files, and smoke-tests the installer.
+
+### Removed
+
+- "Personal repository", "private", "single owner" and "no redistribution" wording from
+  `README.md`, `LICENSE`, `AGENTS.md`, `MEMORY.md`, `HANDOFF.md`, `ASSUMPTIONS.md`,
+  `docs/PROJECT-STATUS.md` and `atlas-project-architect/README.md`.
 
 ### Verified
 
-- `node --test tests/version.test.mjs` → 14 passed, 1 skipped, 0 failed.
+- `node --test tests/version.test.mjs tests/install.test.mjs` → 23 passed, 1 skipped, 0 failed (Windows).
+- CI on `ubuntu-latest`, Node 20 and 22 → 24/24, 0 skipped.
 - `version:verify` → no drift; `sync` twice → no diff.
 
 ## [1.0.0] - 2026-11-24
@@ -27,15 +62,21 @@ All notable changes to this repository.
 
 - `ATLAS-MASTER-PROMPT.md` — the full rulebook: 34 sections + appendix.
 - `atlas-project-architect/` — portable skill: `SKILL.md`, 11 phase references, 6 templates.
-- `scripts/version.mjs` — zero-dependency SSOT version tool (`bump` / `set` / `sync` / `verify` / `show`), transactional and BOM-safe.
+- `scripts/version.mjs` — zero-dependency SSOT version tool (`bump` / `set` / `sync` /
+  `verify` / `show`), transactional and BOM-safe.
 - `assets/banner.svg` — hand-authored repository hero.
-- `LICENSE` — personal use, no redistribution.
+- `LICENSE` — initial license terms.
 
 ### Verified
 
-- `version.mjs`: bump, set, sync, verify, show, `--dry-run`, drift detection, rollback on write failure, BOM preservation, both SSOT modes.
+- `version.mjs`: bump, set, sync, verify, show, `--dry-run`, drift detection, rollback on
+  write failure, BOM preservation, both SSOT modes.
 
 ### Known limits
 
-- `--all` monorepo iteration and `--force-channel` are specified in the master prompt but not implemented in the bundled script.
+- `--all` monorepo iteration is not in the bundled script; run it per package.
 - Skill behaviour is prompt-level; no automated eval suite has been run.
+
+[Unreleased]: https://github.com/SudhirDevOps1/atlas-skill/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/SudhirDevOps1/atlas-skill/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/SudhirDevOps1/atlas-skill/releases/tag/v1.0.0
