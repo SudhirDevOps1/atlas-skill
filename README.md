@@ -92,6 +92,87 @@ context and makes the result worse, not better.
 
 The skill triggers on its own. You never have to name it.
 
+### Using the 15-agent team
+
+Installing the skill gives you the rulebook. Installing the team gives you 15 named
+specialists. You do **not** pick all 15 yourself: talk to your primary agent and ask it
+to delegate 2–4 roles. The primary agent stays the coordinator and owns every handoff.
+
+After the project setup, this is what lands in a project:
+
+| Host | Skill | Agents |
+|---|---|---|
+| OpenCode | `.agents/skills/atlas-project-architect/` | `.opencode/agents/<id>.md` |
+| Antigravity | `.agents/skills/atlas-project-architect/` | `.agents/agents/<id>.md` |
+
+Open a **new agent session** after install. A file on disk is not proof the host loaded
+it — confirm the skill and agents are discoverable in that session.
+
+**Load the skill explicitly when you want to be sure:**
+
+```text
+@atlas-project-architect
+Use this skill for this task. Read SKILL.md and only the references the task needs.
+Show me the plan first — no edits yet.
+```
+
+`@atlas-project-architect` is the OpenCode form. In other hosts, say
+“Use the `atlas-project-architect` skill.”
+
+**Delegate a bounded task:**
+
+```text
+@atlas-project-architect
+You are the coordinator. Task: <one measurable outcome>.
+
+Delegate:
+- api-architect → contract/schema draft (read-only)
+- backend-engineer → implementation plan
+- qa-engineer → test plan
+- code-reviewer → final review
+
+Every report must include command + real output, or NOT RUN with the reason.
+No commit, push, tag or deploy until I approve.
+```
+
+**Call one specialist directly:**
+
+```text
+Use the `security-engineer` subagent to review the auth flow in <path>.
+Findings only — do not edit files.
+```
+
+| Role | Delegate when |
+|---|---|
+| `ui-ux-designer` | screens, layout, tokens, flow decisions |
+| `frontend-engineer` | component and build work in the detected stack |
+| `react-nextjs-engineer` | React/Next.js routing, RSC boundaries, rendering |
+| `animation-engineer` | transitions, micro-interactions, scroll motion |
+| `backend-engineer` | handlers, workers, services, server logic |
+| `api-architect` | endpoint, schema or contract changes |
+| `database-architect` | schema, indexes, transactions, RLS, slow queries |
+| `security-engineer` | threat model, auth review, dependency audit |
+| `qa-engineer` | unit, integration and E2E tests |
+| `performance-engineer` | profiling, budgets, query plans |
+| `devops-engineer` | CI, containers, hosting, rollback |
+| `code-reviewer` | change set ready, before merge |
+| `accessibility-engineer` | any UI change or an a11y audit |
+| `supply-chain-engineer` | new dependency, publish, licence audit |
+| `docs-engineer` | material file changes, before release |
+
+The rules that keep this useful:
+
+- Usually **2–4 roles**, never all 15. One-line snippets and explanations stay in the
+  parent thread.
+- Review and audit roles are **read-only**. Roles that may write ask permission first.
+- A subagent report is **advice**, not authority. The parent verifies it by re-running
+  the claimed command.
+- No external action, install, migration, deploy, commit or push without explicit
+  approval. If it was not run, the report says **NOT RUN**.
+
+Full coordinator loop, delegation packet and handoff contract:
+**[`atlas-project-architect/references/11-agent-team.md`](atlas-project-architect/references/11-agent-team.md)**
+
 ---
 
 ## The loop
