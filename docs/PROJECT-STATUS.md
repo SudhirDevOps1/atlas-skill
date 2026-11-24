@@ -39,7 +39,8 @@ CI matrix: Node 20 and 22 on `ubuntu-latest`. The skipped test runs there, and t
 installer gets a smoke test on both versions.
 
 Run `45378930334` (v1.0.0 commit): **success** — 15/15 on both Node versions.
-Run for the `v1.1.0` commit: recorded after the release push.
+Run `45382872606` (v1.1.0 commit): **success** — 23/23, 0 skipped on Node 20 and 22,
+installer smoke test included.
 
 ## Security posture
 

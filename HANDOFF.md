@@ -51,7 +51,14 @@ Command: node scripts/install-skill.mjs --list
 Result:  20 agents, project + global paths (source: vercel-labs/skills docs/agents.md)
 ```
 
-CI for this commit: recorded in `docs/PROJECT-STATUS.md`.
+```text
+Command: gh run view 45382872606
+Result:  success — verify (node 20) 10s, verify (node 22) 13s
+         23/23 tests, 0 skipped, installer smoke test passed
+Env:     GitHub Actions, ubuntu-latest, 2026-11-24
+```
+
+CI for this commit: `45382872606`, green on both Node versions.
 
 ## Broken / failing
 
