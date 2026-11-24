@@ -70,8 +70,10 @@ Load the reference file for the phase you're in. Don't load everything — that 
 | 7. Version | SSOT bump/sync/verify across every surface | `references/07-versioning-ssot.md` |
 | 8. Ship | Deploy, release gates, rollback | `references/08-delivery-and-release.md` |
 | 9. Continue | Memory, handoff, takeover protocol | `references/09-memory-and-handoff.md` |
+| 10. Team | Delegate bounded work to specialist sub-agents; verify their reports | `references/11-agent-team.md` |
 
 Capability packs and external-tool trust tiers: `references/10-skill-matrix.md`.
+Specialist team, role ownership and handoff: `references/11-agent-team.md`; human index: `ATLAS_AGENT_ROLE_MAP.md`. Delegate 2–4 roles per task, never all 15.
 
 ## Decision rules (short form)
 

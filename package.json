@@ -8,9 +8,11 @@
     "node": ">=18"
   },
   "scripts": {
-    "check": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs",
-    "test": "node --test tests/version.test.mjs tests/install.test.mjs",
-    "verify": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs && node --test tests/version.test.mjs tests/install.test.mjs && node atlas-project-architect/scripts/version.mjs verify",
+    "check": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs && node --check scripts/generate-agents.mjs",
+    "test": "node --test tests/version.test.mjs tests/install.test.mjs tests/agents.test.mjs",
+    "verify": "node --check atlas-project-architect/scripts/version.mjs && node --check scripts/install-skill.mjs && node --check scripts/generate-agents.mjs && node --test tests/version.test.mjs tests/install.test.mjs tests/agents.test.mjs && node scripts/generate-agents.mjs --check && node atlas-project-architect/scripts/version.mjs verify",
+    "agents:generate": "node scripts/generate-agents.mjs",
+    "agents:check": "node scripts/generate-agents.mjs --check",
     "install:list": "node scripts/install-skill.mjs --list",
     "install:skill": "node scripts/install-skill.mjs",
     "version:show": "node atlas-project-architect/scripts/version.mjs show",

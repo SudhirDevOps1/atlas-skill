@@ -19,6 +19,19 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   repository, star snapshot and licence behind each one, per-agent fit for Antigravity,
   OpenCode, Claude Code, Codex, Cursor and Copilot, the MCP servers worth adding, and what
   not to install. Verified against the upstream repositories on 2026-11-24.
+- Real 15-role sub-agent team. `atlas-project-architect/agent-roles.json` is the single
+  source of truth; `scripts/generate-agents.mjs` generates 30 host-specific definitions:
+  OpenCode `.opencode/agents/<id>.md` (`mode: subagent`, ordered permissions) and
+  Antigravity `.agents/agents/<id>.md` (`subagent: true`, `mainAgent: false`,
+  `model: inherit`, `commandExecutionPolicy`). Review roles are read-only; writing roles
+  use `ask`/`sandbox`. Formats verified against official host docs on 2026-11-24.
+- `atlas-project-architect/references/11-agent-team.md` and `ATLAS_AGENT_ROLE_MAP.md` —
+  coordinator loop, activation map, delegation packet, handoff contract, conflict order,
+  approval boundaries and distribution rules. The parent stays the single accountable
+  lead; a role is a responsibility boundary, not an independent owner.
+- `tests/agents.test.mjs` — 9 black-box checks for ID uniqueness, persona completeness,
+  gated permissions, verified Antigravity tool names, absence of deprecated OpenCode
+  fields and agreement between the role map, reference and SSOT.
 
 ### Changed
 
@@ -27,6 +40,11 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
 - `INSTALL.md` — strict-approval-mode section, and a "next — the rest of the stack" pointer
   so the installer path does not dead-end at the skill.
 - `AGENTS.md` — purpose and structure list the new documents.
+- `atlas-project-architect/SKILL.md` — phase playbook gains step 10 (agent team) and a
+  pointer to the role map. Existing 33-section master prompt and all 9 capability packs
+  are untouched.
+- `package.json` — `check`, `test` and `verify` now include the generator syntax check,
+  the agent tests and the `--check` drift gate; added `agents:generate` and `agents:check`.
 
 ### Fixed
 
