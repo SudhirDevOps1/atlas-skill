@@ -8,6 +8,26 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
 
 ## [Unreleased]
 
+### Added
+
+- `UNIVERSAL-AGENT-PROMPT.md` — a paste-ready, approval-first operating contract: 13
+  sections covering specialist roles, project preservation, research, UI/UX, animation,
+  backend, database, security, testing, the approval gate, execution, the final report and
+  conflict resolution. §13 states which rule wins when it is loaded alongside ATLAS.
+- `docs/SKILL-STACK.md` — the equipment list: best skill per domain (UI/UX, React/Next.js,
+  animation, security, database, reverse engineering, testing, debugging, documents), the
+  repository, star snapshot and licence behind each one, per-agent fit for Antigravity,
+  OpenCode, Claude Code, Codex, Cursor and Copilot, the MCP servers worth adding, and what
+  not to install. Verified against the upstream repositories on 2026-11-24.
+
+### Changed
+
+- `README.md` — "What's inside" and "What to give the AI" now list the universal prompt
+  and the skill stack; repo map updated.
+- `INSTALL.md` — strict-approval-mode section, and a "next — the rest of the stack" pointer
+  so the installer path does not dead-end at the skill.
+- `AGENTS.md` — purpose and structure list the new documents.
+
 ## [1.1.0] - 2026-11-24
 
 Public release. The repository is now installable in any agent that reads `SKILL.md`,

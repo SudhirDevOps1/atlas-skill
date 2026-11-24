@@ -184,6 +184,22 @@ on-demand reference loading. Prefer the skills directory.
 
 ---
 
+## Next — the rest of the stack
+
+ATLAS is the process. Frontend, motion, security, database and reverse-engineering
+knowledge come from separate skills, and browser/doc/Perf capability comes from MCP
+servers.
+
+**[`docs/SKILL-STACK.md`](docs/SKILL-STACK.md)** lists the best skill per domain, the
+repository and licence behind it, which agent each one fits, and what not to install. Every
+entry was checked against the upstream repository on 2026-11-24.
+
+Install nothing from that page without deciding its scope first: a skill in the wrong
+agent's directory is invisible, and a global install you never use still costs context on
+every turn.
+
+---
+
 ## What to give the AI
 
 The skill is the process. The input is the project.
@@ -193,6 +209,7 @@ The skill is the process. The input is the project.
 | The task only | A brief with assumptions it had to guess |
 | Task + the six `PROJECT-INPUT.md` answers | A brief with far fewer guesses |
 | Task + answers + `ATLAS-MASTER-PROMPT.md` | The full rulebook in context; highest token cost |
+| Task + `UNIVERSAL-AGENT-PROMPT.md` | Approval before every edit, plus a fixed final-report format |
 | Task + an existing repo | Brownfield audit first, then a plan |
 
 The six answers that remove the most guessing:
@@ -211,6 +228,25 @@ Template: `atlas-project-architect/assets/templates/PROJECT-INPUT.md`.
 Do not paste the reference files up front. The skill loads one phase at a time on
 purpose — pasting all eleven costs 10–15× more context and makes the agent worse, not
 better.
+
+### Strict approval mode
+
+`UNIVERSAL-AGENT-PROMPT.md` is a separate, paste-ready contract: thirteen sections of
+roles, preservation rules, research rules, an approval gate and a fixed final report. Use
+it when an unrequested edit is more expensive than an extra question — production data, a
+client repo, anything with a deploy step.
+
+It works in three ways:
+
+1. **Standalone** — paste it as the first message. The agent inspects, then asks.
+2. **With ATLAS** — install the skill as usual and keep the prompt in the repo root. §13
+   resolves the overlap: ATLAS's plan-approve-execute loop wins for reversible edits, the
+   prompt's gate wins for destructive ones.
+3. **As custom instructions** — paste into the agent's project instructions when you want
+   the policy to persist without a skill.
+
+Pick one profile deliberately. ATLAS approves a plan once and then works; the prompt asks
+before every batch. Running both unqualified produces an agent that keeps re-asking.
 
 ---
 

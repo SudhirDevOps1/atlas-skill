@@ -73,6 +73,7 @@ Full matrix, chat-UI fallback, updating and troubleshooting:
 | Task + `PROJECT-INPUT.md` answers | A brief with far fewer guesses |
 | Task + an existing repo | Brownfield audit, then a plan |
 | Task + `ATLAS-MASTER-PROMPT.md` | The full rulebook in context — highest token cost |
+| Task + `UNIVERSAL-AGENT-PROMPT.md` | A strict approval-first engineer: roles, preservation rules, approval gate, final report |
 
 The skill loads one reference at a time on purpose. Pasting all eleven costs 10–15× more
 context and makes the result worse, not better.
@@ -114,10 +115,14 @@ Every claim of “done” carries a command and its real output. If it wasn’t 
 |---|---|---|
 | **`atlas-project-architect/`** | The skill — `SKILL.md` + 11 phase references + 6 templates + the version tool | Installed into an agent; loads only the phase it needs |
 | **`ATLAS-MASTER-PROMPT.md`** | The full rulebook — 34 sections + appendix | One paste into a capable model when you want the complete contract |
+| **`UNIVERSAL-AGENT-PROMPT.md`** | The operating contract — 13 sections: roles, preservation, research, approval policy, final report | Paste when you want approval before every edit; pairs with or without the skill |
+| **`docs/SKILL-STACK.md`** | Which outside skill and MCP server to install per domain, per agent | Building the rest of the stack around ATLAS |
 | **`scripts/install-skill.mjs`** | Zero-dependency installer for 20 agents | Putting the skill where your agent reads it |
 | **`scripts/version.mjs`** (inside the skill) | Zero-dependency SSOT version tool | Any project that ships more than once |
 
-The skill is the operational core. The master prompt is the same thinking, expanded.
+The skill is the operational core. The master prompt is the same thinking, expanded. The
+universal prompt is the approval policy — use it when the cost of an unrequested edit is
+higher than the cost of one more question.
 
 ---
 
@@ -154,6 +159,7 @@ the bundled script — run it per package, or use `pnpm -r run version:sync`.
 ```text
 .
 ├── ATLAS-MASTER-PROMPT.md          full rulebook
+├── UNIVERSAL-AGENT-PROMPT.md       approval-first operating contract
 ├── INSTALL.md                      install in any agent
 ├── package.json                    SSOT (version) + scripts
 ├── assets/banner.svg
@@ -164,7 +170,7 @@ the bundled script — run it per package, or use `pnpm -r run version:sync`.
 │   └── scripts/version.mjs         SSOT tool
 ├── scripts/install-skill.mjs       installer for 20 agents
 ├── tests/                          version.test.mjs · install.test.mjs
-├── docs/                           AGENT-COMPATIBILITY · PROJECT-STATUS · TESTING
+├── docs/                           AGENT-COMPATIBILITY · SKILL-STACK · PROJECT-STATUS · TESTING
 ├── examples/                       greenfield · brownfield audit
 ├── .github/workflows/ci.yml        Node 20 + 22, tests, drift gate
 └── AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · SECURITY

@@ -2,11 +2,12 @@
 
 ## Purpose
 
-Public repository. It ships two artifacts and one helper:
+Public repository. It ships three artifacts and one helper:
 
 1. `ATLAS-MASTER-PROMPT.md` — the full rulebook for a coding agent.
-2. `atlas-project-architect/` — the installable skill (`SKILL.md` + references + templates + version tool).
-3. `scripts/install-skill.mjs` — copies the skill into any supported agent's skills directory.
+2. `UNIVERSAL-AGENT-PROMPT.md` — the approval-first operating contract (13 sections).
+3. `atlas-project-architect/` — the installable skill (`SKILL.md` + references + templates + version tool).
+4. `scripts/install-skill.mjs` — copies the skill into any supported agent's skills directory.
 
 There is no runtime, no server, no database and no users. The product is text plus two CLIs.
 
@@ -26,6 +27,7 @@ There is no runtime, no server, no database and no users. The product is text pl
 ```text
 .
 ├── ATLAS-MASTER-PROMPT.md
+├── UNIVERSAL-AGENT-PROMPT.md
 ├── README.md · INSTALL.md · CHANGELOG.md · LICENSE · SECURITY.md
 ├── assets/banner.svg
 ├── atlas-project-architect/
@@ -36,7 +38,7 @@ There is no runtime, no server, no database and no users. The product is text pl
 │   └── scripts/version.mjs        <- SSOT tool
 ├── scripts/install-skill.mjs      <- installer
 ├── tests/version.test.mjs · install.test.mjs
-├── docs/AGENT-COMPATIBILITY.md · PROJECT-STATUS.md · TESTING.md
+├── docs/AGENT-COMPATIBILITY.md · SKILL-STACK.md · PROJECT-STATUS.md · TESTING.md
 ├── examples/greenfield.md · brownfield-audit.md
 └── .github/workflows/ci.yml
 ```
