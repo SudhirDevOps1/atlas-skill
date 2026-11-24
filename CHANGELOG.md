@@ -28,6 +28,12 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   so the installer path does not dead-end at the skill.
 - `AGENTS.md` — purpose and structure list the new documents.
 
+### Fixed
+
+- `docs/SKILL-STACK.md` — Vercel skills use the CLI-published namespaced names
+  (`vercel-react-best-practices`, `vercel-react-view-transitions`,
+  `vercel-composition-patterns`), verified against `npx skills add --list` on 2026-11-24.
+
 ## [1.1.0] - 2026-11-24
 
 Public release. The repository is now installable in any agent that reads `SKILL.md`,

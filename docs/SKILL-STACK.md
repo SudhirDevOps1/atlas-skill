@@ -34,7 +34,7 @@ motion, security, database, testing and debugging without noise.
 |---|---|---|---|---|
 | UI/UX review | `web-design-guidelines` | `vercel-labs/agent-skills` | 34.8k | MIT (declared in README) |
 | Interface craft | `better-ui` | `jakubkrehel/skills` | 12.6k | MIT |
-| React / Next.js | `react-best-practices` | `vercel-labs/agent-skills` | 34.8k | MIT (declared in README) |
+| React / Next.js | `vercel-react-best-practices` | `vercel-labs/agent-skills` | 34.8k | MIT (declared in README) |
 | Animation | `gsap-core` | `greensock/gsap-skills` | 19.0k | MIT |
 | Security (code) | `code-security` | `semgrep/skills` | 351 | custom — see note |
 | Database | `supabase-postgres-best-practices` | `supabase/agent-skills` | 3.1k | MIT |
@@ -62,7 +62,7 @@ domain knowledge ATLAS deliberately does not carry.
 |---|---|---|---|
 | 1 | `web-design-guidelines` | A checklist review of a real page against the Web Interface Guidelines — focus states, hit targets, motion, semantics | `vercel-labs/agent-skills` |
 | 2 | `better-ui` | Interface craft: hierarchy, spacing, states, the difference between "works" and "feels right" | `jakubkrehel/skills` |
-| 3 | `react-best-practices` | 70 rules across 8 categories, prioritised — waterfalls, bundle size, re-renders, caching | `vercel-labs/agent-skills` |
+| 3 | `vercel-react-best-practices` | 70 rules across 8 categories, prioritised — waterfalls, bundle size, re-renders, caching | `vercel-labs/agent-skills` |
 | 4 | `gsap-core` | The GSAP API surface: tweens, timelines, eases, `matchMedia`, `useGSAP` | `greensock/gsap-skills` |
 | 5 | `code-security` | Secure-coding rules at write time: injection, authz, secrets, unsafe deserialisation | `semgrep/skills` |
 | 6 | `supabase-postgres-best-practices` | Postgres schema, types, indexes, constraints, RLS — for Postgres **anywhere**, not only Supabase | `supabase/agent-skills` |
@@ -111,8 +111,8 @@ optional.
 
 | Skill | Use it when |
 |---|---|
-| `react-view-transitions` | Route and shared-element transitions |
-| `composition-patterns` | Server/client component boundaries |
+| `vercel-react-view-transitions` | Route and shared-element transitions |
+| `vercel-composition-patterns` | Server/client component boundaries |
 | `vercel-optimize` | Cost, caching, function usage on a Vercel project |
 | `deploy-to-vercel` | The deploy itself, when the user asked for it |
 
@@ -186,10 +186,10 @@ invisible. These are the global paths ATLAS's installer and
 | Agent | Installer id | Global skills directory | Best-fit picks |
 |---|---|---|---|
 | **Antigravity** | `antigravity` | `~/.gemini/config/skills/` | Tier A + frontend polish + `webapp-testing` |
-| **OpenCode** | `opencode` | `~/.config/opencode/skills/` | Tier A + `react-best-practices` + `systematic-debugging` |
+| **OpenCode** | `opencode` | `~/.config/opencode/skills/` | Tier A + `vercel-react-best-practices` + `systematic-debugging` |
 | **Claude Code** | `claude-code` | `~/.claude/skills/` | Tier A + `writing-plans` + `webapp-testing` |
 | **Codex** | `codex` | `~/.agents/skills/` | Tier A + `code-security` + `test-driven-development` |
-| **Cursor** | `cursor` | `~/.cursor/skills/` | Tier A + `better-ui` + `react-best-practices` |
+| **Cursor** | `cursor` | `~/.cursor/skills/` | Tier A + `better-ui` + `vercel-react-best-practices` |
 | **GitHub Copilot** | `github-copilot` | `~/.copilot/skills/` | Tier A only — Copilot's context budget is the tightest |
 | **Windsurf** | `windsurf` | `~/.codeium/windsurf/skills/` | Tier A + `better-ui` |
 | **Gemini CLI** | `gemini-cli` | `~/.gemini/skills/` | Tier A + database pack |
@@ -255,6 +255,12 @@ npx skills remove web-design-guidelines
 
 `-g` installs to the user directory, `-a` targets agents, `-s`/`--skill` picks skills,
 `-y` skips prompts. Omit `-y` the first time so you can read what it plans to write.
+
+**Namespaced names.** The `skills` CLI publishes some skills with an owner prefix. In
+`vercel-labs/agent-skills`, `react-best-practices` installs as
+`vercel-react-best-practices`; the same applies to `vercel-react-view-transitions` and
+`vercel-composition-patterns`. Run `npx skills add <repo> --list` before installing to see
+the real install names. All names in this page are the CLI-verified names.
 
 The alternative, and the one to prefer when you do not trust a source: clone the
 repository, read `SKILL.md` and any script it references, then copy the folder into the
