@@ -1,0 +1,22 @@
+# Ignored everywhere
+node_modules/
+.pnpm-store/
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS / editor noise
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Local scratch
+tmp/
+temp/
+*.tmp
+*.bak
