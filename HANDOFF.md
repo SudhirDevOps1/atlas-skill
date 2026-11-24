@@ -32,6 +32,27 @@ CLIs, CI with a drift gate, and the memory set.
 - CI — syntax-checks both CLIs, runs both test files, smoke-tests the installer.
 - Removed every "personal / private / single owner / no redistribution" statement.
 
+### Follow-up session — 2026-11-24
+
+- `UNIVERSAL-AGENT-PROMPT.md` — 13-section approval-first operating contract, paste-ready.
+  §13 resolves overlap with ATLAS: safety and destructive-action approval win; reversible
+  edits inside an approved ATLAS plan do not need per-file approval.
+- `docs/SKILL-STACK.md` — verified equipment list: best skill per domain, star/licence
+  snapshot from 2026-11-24, per-agent mapping, MCP table, install commands and exclusions.
+  Vercel skills use the CLI-published names (`vercel-react-best-practices` etc.).
+- `README.md`, `INSTALL.md`, `AGENTS.md`, `CHANGELOG.md` — wired to both new documents.
+- Pushed: `1fabd6a` (docs), `40a06c2` (name fix). No release; version stays 1.1.0.
+
+**Local stack installed after approval** (OpenCode + Antigravity, global):
+
+- Skills: `web-design-guidelines`, `vercel-react-best-practices`, `better-ui`, `gsap-core`,
+  `code-security`, `supabase-postgres-best-practices`, `test-driven-development`,
+  `systematic-debugging`.
+- OpenCode MCP: `context7`, `playwright`, `chrome-devtools`, `github` (remote OAuth),
+  `supabase` (read-only OAuth), `rea` (pre-existing), `postgres` (disabled until a DSN is set).
+- Antigravity MCP: same seven in `~/.gemini/config/mcp_config.json`; `postgres` disabled.
+- Config backups: `opencode.json.pre-mcp-backup`, `mcp_config.json.pre-mcp-backup`.
+
 ## Verified
 
 ```text
@@ -66,7 +87,9 @@ Nothing known.
 
 ## Next 3 actions
 
-1. Confirm the CI run for the public release is green on Node 20 and 22.
+1. Authenticate `github` and `supabase` in OpenCode (`opencode mcp auth <name>`) and in
+   Antigravity (Customizations → MCP Servers → Authenticate). Postgres stays disabled
+   until `DATABASE_URI` is set; then remove `disabled: true` in both configs.
 2. Build the eval harness for skill behaviour: 3–5 prompts, rubric, recorded output.
 3. Re-check agent paths against vendor docs before the next release; update the
    verification date in `docs/AGENT-COMPATIBILITY.md`.
