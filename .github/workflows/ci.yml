@@ -35,9 +35,14 @@ jobs:
         run: |
           node --check atlas-project-architect/scripts/version.mjs
           node --check scripts/install-skill.mjs
+          node --check scripts/generate-agents.mjs
+          node --check scripts/setup-project.mjs
 
       - name: Tests
-        run: node --test tests/version.test.mjs tests/install.test.mjs
+        run: node --test tests/version.test.mjs tests/install.test.mjs tests/agents.test.mjs tests/setup-project.test.mjs
+
+      - name: Generated agents match the SSOT
+        run: node scripts/generate-agents.mjs --check
 
       - name: Version SSOT is in sync
         run: node atlas-project-architect/scripts/version.mjs verify
@@ -52,3 +57,14 @@ jobs:
           node scripts/install-skill.mjs --dest .ci-skills
           test -f .ci-skills/atlas-project-architect/SKILL.md
           test -f .ci-skills/atlas-project-architect/references/07-versioning-ssot.md
+
+      - name: Project setup smoke test
+        run: |
+          mkdir -p .ci-project
+          node scripts/setup-project.mjs --project .ci-project
+          test ! -f .ci-project/opencode.json
+          node scripts/setup-project.mjs --project .ci-project --apply
+          test -f .ci-project/opencode.json
+          test -f .ci-project/.opencode/agents/api-architect.md
+          test -f .ci-project/.agents/agents/api-architect.md
+          test -f .ci-project/.agents/skills/atlas-project-architect/SKILL.md

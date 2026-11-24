@@ -32,6 +32,16 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
 - `tests/agents.test.mjs` — 9 black-box checks for ID uniqueness, persona completeness,
   gated permissions, verified Antigravity tool names, absence of deprecated OpenCode
   fields and agreement between the role map, reference and SSOT.
+- `scripts/setup-project.mjs` and `docs/PROJECT-SETUP.md` — one-project, approval-first
+  setup: preview by default, `--apply` to write, skill + 15 agents per host + four
+  read-only MCP entries (`context7`, `playwright`, `github` `/readonly`, Supabase
+  `read_only=true`). Project-local config only, no secrets, existing files and servers
+  kept unless `--force`, backups before replacement, preflight validation and an
+  idempotent second run. Paths and endpoints cite vendor docs checked 2026-11-24.
+- `tests/setup-project.test.mjs` — 11 black-box checks: dry-run writes nothing, correct
+  nested `mcp.servers` shape, read-only endpoints, idempotence, existing-config
+  preservation, invalid-JSON/JSONC refusal, scoped selection, backup on `--force` and
+  unsafe-target rejection.
 
 ### Changed
 
@@ -44,7 +54,12 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   pointer to the role map. Existing 33-section master prompt and all 9 capability packs
   are untouched.
 - `package.json` — `check`, `test` and `verify` now include the generator syntax check,
-  the agent tests and the `--check` drift gate; added `agents:generate` and `agents:check`.
+  the agent tests, the setup CLI/tests and the `--check` drift gate; added
+  `agents:generate`, `agents:check`, `setup:list`, `setup:preview` and `setup:apply`.
+- `.github/workflows/ci.yml` — syntax checks and tests cover all four CLIs; added the
+  agent-SSOT drift gate and a project-setup smoke test.
+- `README.md` — tests badge updated to 43 and the one-project setup guide is linked from
+  the install section.
 
 ### Fixed
 

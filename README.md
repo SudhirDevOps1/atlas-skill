@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/license-MIT-2F81F7?style=flat-square)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-2F81F7?style=flat-square)](#versioning--one-source-of-truth)
-[![Tests](https://img.shields.io/badge/tests-23-0F766E?style=flat-square)](docs/TESTING.md)
+[![Tests](https://img.shields.io/badge/tests-43-0F766E?style=flat-square)](docs/TESTING.md)
 [![Agents](https://img.shields.io/badge/agents-60%2B-6B7C8F?style=flat-square)](docs/AGENT-COMPATIBILITY.md)
 
 ### Turn “build me this” into a project that survives week two.
@@ -64,6 +64,10 @@ Replace `claude-code` with `codex`, `cursor`, `antigravity`, `opencode`, `copilo
 Full matrix, chat-UI fallback, updating and troubleshooting:
 **[`INSTALL.md`](INSTALL.md)** · per-agent paths and sources:
 **[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md)**
+
+Want the skill, the 15-role agent team and four read-only MCP servers in one project?
+**[`docs/PROJECT-SETUP.md`](docs/PROJECT-SETUP.md)** — preview first, `--apply` only after
+approval.
 
 ### What to give the AI
 
