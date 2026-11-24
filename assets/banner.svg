@@ -41,13 +41,13 @@
         font-size="14" fill="#9FB0C0">Idea · Research · Build · Prove · Ship · Handoff</text>
 
   <g transform="translate(1040 150)">
-    <circle r="112" fill="none" stroke="#8FA3B8" stroke-opacity="0.22" stroke-width="6" stroke-dasharray="2 12"/>
-    <circle r="96" fill="none" stroke="#2C3A49" stroke-width="1"/>
-    <circle r="62" fill="none" stroke="#2C3A49" stroke-width="1" stroke-dasharray="4 7"/>
-    <circle r="26" fill="none" stroke="#2C3A49" stroke-width="1"/>
-    <path d="M0-118V118M-118 0H118" stroke="#2C3A49" stroke-width="1"/>
-    <path d="M0-96A96 96 0 0 1 96 0" fill="none" stroke="#E8A33D" stroke-opacity="0.85" stroke-width="2" stroke-linecap="round"/>
-    <path d="M0 96A96 96 0 0 1-96 0" fill="none" stroke="#E8A33D" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round"/>
+    <circle r="104" fill="none" stroke="#8FA3B8" stroke-opacity="0.22" stroke-width="6" stroke-dasharray="2 12"/>
+    <circle r="90" fill="none" stroke="#2C3A49" stroke-width="1"/>
+    <circle r="58" fill="none" stroke="#2C3A49" stroke-width="1" stroke-dasharray="4 7"/>
+    <circle r="24" fill="none" stroke="#2C3A49" stroke-width="1"/>
+    <path d="M0-110V110M-110 0H110" stroke="#2C3A49" stroke-width="1"/>
+    <path d="M0-90A90 90 0 0 1 90 0" fill="none" stroke="#E8A33D" stroke-opacity="0.85" stroke-width="2" stroke-linecap="round"/>
+    <path d="M0 90A90 90 0 0 1-90 0" fill="none" stroke="#E8A33D" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round"/>
     <rect x="-11" y="-11" width="22" height="22" transform="rotate(45)" fill="none" stroke="#E8A33D" stroke-width="1.5"/>
     <circle r="3" fill="#E8A33D"/>
   </g>

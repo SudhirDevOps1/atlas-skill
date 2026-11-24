@@ -4,7 +4,7 @@
 
 <br><br>
 
-[![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-2F81F7?style=flat-square)](#versioning--one-source-of-truth)
 [![Phase references](https://img.shields.io/badge/phase%20references-11-6B7C8F?style=flat-square)](#repo-map)
 [![Version tool](https://img.shields.io/badge/version%20tool-tested-E8A33D?style=flat-square)](#status)
