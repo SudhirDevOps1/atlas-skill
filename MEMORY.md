@@ -32,6 +32,7 @@ project with one source of truth for versioning.
 - PowerShell 5.1 writes a UTF-8 BOM. Any `^`-anchored regex must run on BOM-stripped text, and the BOM must be restored on write.
 - shields.io: `-` separates message from colour, so a greedy `[0-9A-Za-z.-]+` eats the `-blue` suffix.
 - `node --test` skips nothing silently — the skipped rollback test is explicit in output, which is the behaviour we want.
+- GitHub deprecated the Node 20 runtime for Actions in late 2025; `checkout@v4` / `setup-node@v4` trigger a warning. v5 SHAs are current.
 
 ## Failed approaches
 

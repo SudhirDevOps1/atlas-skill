@@ -32,6 +32,13 @@ Skip:    rollback test (directory permissions are not enforced on Windows)
 
 CI matrix: Node 20 and 22 on `ubuntu-latest`. The skipped test runs there.
 
+First run — `45378930334` — **success**:
+
+```text
+verify (node 20)  10s   15 passed, 0 skipped, 0 failed
+verify (node 22)   6s   15 passed, 0 skipped, 0 failed
+```
+
 ## Security posture
 
 - Zero dependencies → no transitive supply-chain surface.

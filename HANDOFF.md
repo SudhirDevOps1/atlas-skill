@@ -32,9 +32,16 @@ Command: node atlas-project-architect/scripts/version.mjs verify
 Result:  OK — 1.0.0 in sync (stable, code 10000900)
 ```
 
+```text
+Command: gh run view 45378930334
+Result:  success — verify (node 20) 10s, verify (node 22) 6s, 15/15 tests on Linux
+Env:     GitHub Actions, ubuntu-latest, 2026-11-24
+```
+
 ## Broken / failing
 
-Nothing known. CI result is recorded in `docs/PROJECT-STATUS.md` after the first run.
+Nothing known. First CI run `45378930334` was green on Node 20 and 22, with 15/15 tests
+on Linux (including the rollback case that skips on Windows).
 
 ## Next 3 actions
 

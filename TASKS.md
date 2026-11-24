@@ -8,10 +8,12 @@
 - [x] Manual end-to-end verification of the version tool on Windows.
 - [x] Repo created, private, banner + README + license + `v1.0.0` release.
 - [x] Repo put under its own skill: SSOT, 15 tests, CI, memory set.
+- [x] First CI run green on Node 20 and 22 (run `45378930334`).
+- [x] Actions re-pinned to `v5` SHAs after the Node 20 runtime deprecation warning.
 
 ## In progress
 
-- [ ] Confirm first CI run is green on Node 20 and 22.
+- [ ] None.
 
 ## Pending
 
