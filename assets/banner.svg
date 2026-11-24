@@ -1,153 +1,148 @@
 
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="1280" height="300"
      viewBox="0 0 1280 300"
-     fill="none"
-     role="img"
-     aria-label="ATLAS Project Architect">
+     width="1280" height="300"
+     role="img" aria-label="ATLAS Apex Project Architect">
 
-<title>ATLAS — Project Architect</title>
-<desc>Premium animated technical banner for an autonomous project architect.</desc>
+<title>ATLAS — Apex Project Architect</title>
 
 <defs>
-  <!-- Background -->
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#05080D"/>
-    <stop offset=".48" stop-color="#0B121B"/>
-    <stop offset="1" stop-color="#121B27"/>
+  <linearGradient id="background" x2="1" y2="1">
+    <stop stop-color="#050607"/>
+    <stop offset=".52" stop-color="#10151B"/>
+    <stop offset="1" stop-color="#080C11"/>
   </linearGradient>
 
-  <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#FFE0A0"/>
-    <stop offset=".5" stop-color="#D99A38"/>
-    <stop offset="1" stop-color="#A96820"/>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#FFF0C9"/>
+    <stop offset=".25" stop-color="#E7B86B"/>
+    <stop offset=".55" stop-color="#A86C2D"/>
+    <stop offset=".8" stop-color="#F4D69A"/>
+    <stop offset="1" stop-color="#8D5927"/>
   </linearGradient>
 
-  <linearGradient id="titleGradient" x1="0" y1="0" x2="1" y2="0">
-    <stop offset="0" stop-color="#FFFFFF"/>
-    <stop offset=".7" stop-color="#E6EAF0"/>
-    <stop offset="1" stop-color="#AAB6C4"/>
+  <linearGradient id="white" x2="1">
+    <stop stop-color="#FFFFFF"/>
+    <stop offset=".65" stop-color="#DCE2E9"/>
+    <stop offset="1" stop-color="#8795A4"/>
   </linearGradient>
 
-  <radialGradient id="ambient">
-    <stop offset="0" stop-color="#E8A33D" stop-opacity=".18"/>
-    <stop offset="1" stop-color="#E8A33D" stop-opacity="0"/>
+  <linearGradient id="beam">
+    <stop stop-color="#DDA64E" stop-opacity="0"/>
+    <stop offset=".5" stop-color="#FFE1A0" stop-opacity=".65"/>
+    <stop offset="1" stop-color="#DDA64E" stop-opacity="0"/>
+  </linearGradient>
+
+  <radialGradient id="goldLight">
+    <stop stop-color="#E8AE54" stop-opacity=".24"/>
+    <stop offset="1" stop-color="#E8AE54" stop-opacity="0"/>
   </radialGradient>
 
-  <radialGradient id="blueGlow">
-    <stop offset="0" stop-color="#527A9F" stop-opacity=".15"/>
-    <stop offset="1" stop-color="#527A9F" stop-opacity="0"/>
-  </radialGradient>
-
-  <pattern id="grid" width="32" height="32"
+  <pattern id="blueprint" width="40" height="40"
            patternUnits="userSpaceOnUse">
-    <path d="M32 0H0V32"
-          stroke="#9FB2C5"
-          stroke-opacity=".065"
-          stroke-width=".8"/>
+    <path d="M40 0H0V40"
+          stroke="#B3C1CE"
+          stroke-opacity=".045"
+          fill="none"/>
+    <circle cx="0" cy="0" r="1"
+            fill="#D8B475" opacity=".2"/>
   </pattern>
 
-  <filter id="blur">
-    <feGaussianBlur stdDeviation="18"/>
-  </filter>
-
-  <filter id="goldGlow">
-    <feGaussianBlur stdDeviation="3" result="blurred"/>
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="5" result="b"/>
     <feMerge>
-      <feMergeNode in="blurred"/>
+      <feMergeNode in="b"/>
       <feMergeNode in="SourceGraphic"/>
     </feMerge>
   </filter>
 
-  <clipPath id="canvas">
+  <filter id="soft">
+    <feGaussianBlur stdDeviation="22"/>
+  </filter>
+
+  <clipPath id="frame">
     <rect width="1280" height="300"/>
   </clipPath>
 </defs>
 
 <style>
-  * {
-    box-sizing: border-box;
+  .orbit1 {
+    transform-origin: 1050px 145px;
+    animation: spin 32s linear infinite;
+  }
+
+  .orbit2 {
+    transform-origin: 1050px 145px;
+    animation: spinBack 24s linear infinite;
+  }
+
+  .orbit3 {
+    transform-origin: 1050px 145px;
+    animation: spin 65s linear infinite;
+  }
+
+  .core {
+    transform-origin: 1050px 145px;
+    animation: breathe 4s ease-in-out infinite;
   }
 
   .ambient {
-    animation: breathe 7s ease-in-out infinite alternate;
+    animation: ambient 8s ease-in-out infinite alternate;
   }
 
-  .grid {
-    animation: gridMove 35s linear infinite;
+  .lightSweep {
+    animation: sweep 8s ease-in-out infinite;
   }
 
-  .orbit {
-    transform-origin: 1040px 148px;
-    animation: rotate 30s linear infinite;
+  .intro {
+    animation: intro 1.5s cubic-bezier(.2,.7,.2,1) both;
   }
 
-  .orbit-reverse {
-    transform-origin: 1040px 148px;
-    animation: rotateReverse 22s linear infinite;
+  .intro2 {
+    animation: intro 1.5s .25s cubic-bezier(.2,.7,.2,1) both;
   }
 
-  .pulse {
-    animation: pulse 3s ease-in-out infinite;
+  .intro3 {
+    animation: intro 1.5s .45s cubic-bezier(.2,.7,.2,1) both;
   }
 
-  .scan {
-    animation: scan 6s ease-in-out infinite;
-  }
-
-  .particle {
+  .particles {
     animation: float 5s ease-in-out infinite alternate;
   }
 
-  .reveal {
-    animation: reveal 1.3s ease-out both;
-  }
-
-  .reveal-delay {
-    animation: reveal 1.3s .25s ease-out both;
-  }
-
-  .reveal-late {
-    animation: reveal 1.3s .5s ease-out both;
-  }
-
-  @keyframes breathe {
-    from { opacity: .55; }
-    to { opacity: 1; }
-  }
-
-  @keyframes gridMove {
-    from { transform: translate(0,0); }
-    to { transform: translate(32px,32px); }
-  }
-
-  @keyframes rotate {
+  @keyframes spin {
     to { transform: rotate(360deg); }
   }
 
-  @keyframes rotateReverse {
+  @keyframes spinBack {
     to { transform: rotate(-360deg); }
   }
 
-  @keyframes pulse {
-    0%,100% { opacity: .5; }
-    50% { opacity: 1; }
+  @keyframes breathe {
+    0%,100% { opacity: .65; transform: scale(.96); }
+    50% { opacity: 1; transform: scale(1.04); }
   }
 
-  @keyframes scan {
-    0%,100% { transform: translateX(-160px); opacity: 0; }
-    20%,70% { opacity: .7; }
-    90% { transform: translateX(1100px); opacity: 0; }
+  @keyframes ambient {
+    from { opacity: .45; }
+    to { opacity: 1; }
+  }
+
+  @keyframes sweep {
+    0%,12% { transform: translateX(-350px); opacity: 0; }
+    25% { opacity: .7; }
+    60% { opacity: .2; }
+    85%,100% { transform: translateX(1500px); opacity: 0; }
+  }
+
+  @keyframes intro {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes float {
-    from { transform: translateY(0); opacity: .35; }
-    to { transform: translateY(-12px); opacity: .9; }
-  }
-
-  @keyframes reveal {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { transform: translateY(5px); opacity: .35; }
+    to { transform: translateY(-8px); opacity: .9; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -157,209 +152,203 @@
   }
 </style>
 
-<g clip-path="url(#canvas)">
+<g clip-path="url(#frame)">
 
-  <!-- Base -->
-  <rect width="1280" height="300" fill="url(#bg)"/>
+  <!-- Background -->
+  <rect width="1280" height="300" fill="url(#background)"/>
+  <rect width="1280" height="300" fill="url(#blueprint)"/>
 
-  <!-- Ambient lights -->
-  <ellipse class="ambient" cx="1040" cy="120"
-           rx="280" ry="230" fill="url(#ambient)"/>
+  <!-- Atmospheric illumination -->
+  <ellipse class="ambient" cx="1050" cy="145"
+           rx="260" ry="210"
+           fill="url(#goldLight)"/>
 
-  <ellipse cx="340" cy="300"
-           rx="300" ry="170" fill="url(#blueGlow)"/>
+  <ellipse cx="1050" cy="145" rx="100" ry="95"
+           fill="#D99A44" opacity=".09"
+           filter="url(#soft)"/>
 
-  <!-- Technical grid -->
-  <rect width="1280" height="300"
-        fill="url(#grid)" class="grid"/>
-
-  <!-- Atmospheric light -->
-  <ellipse cx="1080" cy="145" rx="130" ry="110"
-           fill="#D89A3D" opacity=".08" filter="url(#blur)"/>
-
-  <!-- Frame corners -->
-  <g stroke="url(#gold)" stroke-width="1.4"
-     stroke-opacity=".65">
-    <path d="M38 66V38H66"/>
-    <path d="M1242 66V38H1214"/>
-    <path d="M38 234V262H66"/>
-    <path d="M1242 234V262H1214"/>
+  <!-- Architectural borders -->
+  <g stroke="url(#metal)" stroke-width="1"
+     stroke-opacity=".6" fill="none">
+    <path d="M35 65V35H65"/>
+    <path d="M1245 65V35H1215"/>
+    <path d="M35 235V265H65"/>
+    <path d="M1245 235V265H1215"/>
   </g>
 
-  <!-- Left identity -->
-  <g class="reveal">
+  <!-- Header -->
+  <g class="intro">
+    <rect x="74" y="52" width="26" height="1"
+          fill="url(#metal)"/>
 
-    <rect x="72" y="47" width="5" height="13"
-          rx="2" fill="url(#gold)"/>
-
-    <text x="88" y="58"
+    <text x="110" y="56"
+          fill="#B7C0CA"
           font-family="Consolas, monospace"
-          font-size="11"
-          letter-spacing="4"
-          fill="#A8B6C6">
-      AUTONOMOUS PROJECT INTELLIGENCE
+          font-size="10"
+          letter-spacing="4">
+      INTELLIGENT PROJECT ENGINEERING
     </text>
 
-    <text x="68" y="164"
+    <text x="70" y="165"
+          fill="url(#white)"
           font-family="Inter, Segoe UI, sans-serif"
-          font-size="88"
+          font-size="91"
           font-weight="800"
-          letter-spacing="9"
-          fill="url(#titleGradient)">
+          letter-spacing="12">
       ATLAS
     </text>
 
-    <!-- Gold underline -->
-    <rect x="74" y="181" width="72" height="3"
-          rx="1.5" fill="url(#gold)"
-          filter="url(#goldGlow)"/>
-
+    <text x="75" y="194"
+          fill="#C18B46"
+          font-family="Consolas, monospace"
+          font-size="9"
+          letter-spacing="3">
+      A SYSTEM FOR TURNING IDEAS INTO REALITY
+    </text>
   </g>
 
-  <!-- Subtitle -->
-  <g class="reveal-delay">
+  <!-- Main divider -->
+  <g class="intro2">
+    <rect x="75" y="213" width="430" height="1"
+          fill="#687582" opacity=".35"/>
 
-    <text x="74" y="216"
+    <rect x="75" y="213" width="85" height="1.5"
+          fill="url(#metal)"/>
+
+    <text x="75" y="242"
           font-family="Consolas, monospace"
-          font-size="15"
-          font-weight="600"
-          letter-spacing="5"
-          fill="#E8AD53">
+          font-size="14"
+          letter-spacing="4"
+          fill="#E8BD79">
       PROJECT ARCHITECT
     </text>
 
-    <text x="74" y="247"
-          font-family="Inter, Segoe UI, sans-serif"
-          font-size="13"
-          letter-spacing=".5"
-          fill="#A1B0BF">
-      Idea · Research · Build · Prove · Ship · Handoff
+    <text x="75" y="264"
+          font-family="Inter, sans-serif"
+          font-size="11"
+          letter-spacing="1"
+          fill="#8795A4">
+      IDEA / RESEARCH / BUILD / PROVE / SHIP / HANDOFF
     </text>
-
   </g>
 
-  <!-- Right technical compass -->
+  <!-- Compass architectural emblem -->
   <g>
 
-    <!-- Outer circle -->
-    <circle cx="1040" cy="148" r="108"
-            stroke="#8094A9"
-            stroke-opacity=".16"
-            stroke-width="1"/>
+    <!-- Outer rings -->
+    <circle cx="1050" cy="145" r="111"
+            stroke="#A5B4C2" stroke-opacity=".15"/>
 
-    <circle cx="1040" cy="148" r="101"
-            stroke="#A6B8C8"
-            stroke-opacity=".3"
-            stroke-width="3"
-            stroke-dasharray="1 10"/>
+    <circle cx="1050" cy="145" r="104"
+            stroke="#A5B4C2" stroke-opacity=".25"
+            stroke-width="2" stroke-dasharray="1 9"/>
 
-    <!-- Rotating orbit -->
-    <g class="orbit">
-      <circle cx="1040" cy="148" r="88"
-              stroke="#D99A38"
-              stroke-opacity=".75"
-              stroke-width="1.5"
-              stroke-dasharray="110 445"
+    <g class="orbit1">
+      <circle cx="1050" cy="145" r="91"
+              stroke="url(#metal)" stroke-width="1.5"
+              stroke-dasharray="100 472"
               stroke-linecap="round"/>
 
-      <circle cx="1040" cy="60" r="4"
-              fill="#F5C779"
-              filter="url(#goldGlow)"/>
+      <path d="M1050 54L1055 45L1060 54"
+            stroke="#F7D99E" stroke-width="1.5"
+            fill="none"/>
     </g>
 
-    <g class="orbit-reverse">
-      <circle cx="1040" cy="148" r="70"
-              stroke="#8195A9"
-              stroke-opacity=".55"
+    <g class="orbit2">
+      <circle cx="1050" cy="145" r="75"
+              stroke="#8998A8" stroke-opacity=".45"
               stroke-width="1"
-              stroke-dasharray="3 8"/>
+              stroke-dasharray="2 7"/>
 
-      <circle cx="1040" cy="78" r="2.5"
-              fill="#D99A38"/>
+      <circle cx="1125" cy="145" r="3"
+              fill="#E4B56D" filter="url(#glow)"/>
     </g>
 
-    <!-- Inner rings -->
-    <circle cx="1040" cy="148" r="49"
-            stroke="#71869B"
-            stroke-opacity=".3"
-            stroke-width="1"/>
+    <g class="orbit3">
+      <circle cx="1050" cy="145" r="61"
+              stroke="#D8AC67" stroke-opacity=".35"
+              stroke-width="1" stroke-dasharray="35 18 3 18"/>
 
-    <circle cx="1040" cy="148" r="28"
-            stroke="#D99A38"
-            stroke-opacity=".4"
-            stroke-width="1"/>
+      <path d="M1050 84V95"
+            stroke="#E7C58E" stroke-width="2"/>
+    </g>
 
-    <!-- Crosshair -->
-    <path d="M1040 34V262M926 148H1154"
-          stroke="#8295A8"
-          stroke-opacity=".2"
+    <!-- Coordinate cross -->
+    <path d="M1050 27V263M932 145H1168"
+          stroke="#8393A3" stroke-opacity=".2"
           stroke-width="1"/>
 
-    <!-- Compass -->
-    <path d="M1040 79L1050 138L1040 148L1030 138Z"
-          fill="url(#gold)" opacity=".95"/>
+    <!-- Geometric star -->
+    <g class="core" filter="url(#glow)">
+      <path d="M1050 82L1067 145L1050 208L1033 145Z"
+            fill="url(#metal)" opacity=".95"/>
 
-    <path d="M1040 217L1030 158L1040 148L1050 158Z"
-          fill="#8094A9" opacity=".35"/>
+      <path d="M987 145L1050 128L1113 145L1050 162Z"
+            fill="#A77A42" opacity=".55"/>
 
-    <path d="M971 148L1030 138L1040 148L1030 158Z"
-          fill="#8094A9" opacity=".25"/>
+      <path d="M1050 82L1050 208"
+            stroke="#FFF0C9" stroke-opacity=".6"/>
 
-    <path d="M1109 148L1050 158L1040 148L1050 138Z"
-          fill="#D99A38" opacity=".3"/>
+      <circle cx="1050" cy="145" r="8"
+              fill="#FFF0C9"/>
+      <circle cx="1050" cy="145" r="3"
+              fill="#80521F"/>
+    </g>
 
-    <!-- Core -->
-    <circle cx="1040" cy="148" r="8"
-            fill="#E5A747" opacity=".18"
-            class="pulse"/>
+    <!-- Floating stars -->
+    <g fill="#EAC17F">
+      <circle class="particles" cx="956" cy="89" r="1.5"/>
+      <circle class="particles" cx="1137" cy="93" r="2"/>
+      <circle class="particles" cx="1142" cy="210" r="1.5"/>
+      <circle class="particles" cx="964" cy="214" r="2"/>
+    </g>
 
-    <circle cx="1040" cy="148" r="3"
-            fill="#FFE0A0"
-            filter="url(#goldGlow)"/>
-
-    <!-- Floating particles -->
-    <g fill="#E8A33D">
-      <circle class="particle" cx="943" cy="98" r="2"/>
-      <circle class="particle" cx="1128" cy="102" r="1.5"/>
-      <circle class="particle" cx="1117" cy="214" r="2"/>
-      <circle class="particle" cx="956" cy="204" r="1.5"/>
+    <!-- Compass labels -->
+    <g fill="#9AA8B6"
+       font-family="Consolas, monospace"
+       font-size="7"
+       letter-spacing="1">
+      <text x="1050" y="23" text-anchor="middle">N</text>
+      <text x="1050" y="277" text-anchor="middle">S</text>
+      <text x="918" y="148" text-anchor="middle">W</text>
+      <text x="1182" y="148" text-anchor="middle">E</text>
     </g>
 
   </g>
 
-  <!-- Scan light -->
-  <g class="scan">
-    <rect x="0" y="0" width="100" height="300"
-          fill="url(#ambient)" opacity=".3"/>
+  <!-- Moving light beam -->
+  <g class="lightSweep">
+    <rect x="0" y="0" width="190" height="300"
+          fill="url(#beam)" opacity=".35"/>
   </g>
 
-  <!-- Right label -->
-  <g class="reveal-late">
-    <text x="1240" y="253"
+  <!-- Footer -->
+  <g class="intro3">
+    <text x="1240" y="247"
           text-anchor="end"
-          font-family="Consolas, monospace"
-          font-size="10"
-          letter-spacing="3"
-          fill="#8295A8">
-      SYSTEM / 001
-    </text>
-
-    <text x="1240" y="272"
-          text-anchor="end"
+          fill="#A6B1BD"
           font-family="Consolas, monospace"
           font-size="9"
-          letter-spacing="2.5"
-          fill="#D8A04B">
+          letter-spacing="2">
+      ARCHITECTURE / 001
+    </text>
+
+    <text x="1240" y="266"
+          text-anchor="end"
+          fill="#DDB16D"
+          font-family="Consolas, monospace"
+          font-size="9"
+          letter-spacing="2">
       SINGLE SOURCE OF TRUTH
     </text>
   </g>
 
-  <!-- Bottom accent -->
+  <!-- Bottom metallic edge -->
   <rect x="0" y="298" width="1280" height="2"
-        fill="#283443"/>
+        fill="#303944"/>
 
-  <rect x="72" y="298" width="120" height="2"
-        fill="url(#gold)"/>
+  <rect x="75" y="298" width="145" height="2"
+        fill="url(#metal)"/>
 
 </g>
 </svg>
