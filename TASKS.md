@@ -20,11 +20,10 @@
 - [x] `1.1.0` bumped, changelog written, tag and release prepared.
 - [x] `1.2.0` hardening pass: P0 installer/version bugs fixed, setup CLI hardened,
       15 new regression tests, Node 22 floor, Ubuntu + Windows CI matrix.
+- [x] CI matrix green on Node 22/24 × Ubuntu/Windows — run `45591502306`, commit `3752be8`.
 
 ## In progress
 
-- [ ] Confirm the CI matrix for the `fix/p0-hardening` branch is green on Node 22 and 24,
-      Ubuntu and Windows (requires a push, which needs approval).
 - [ ] Cut the `v1.2.0` tag and release (needs approval; `v1.0.0` and `v1.1.0` stay immutable).
 
 ## Pending

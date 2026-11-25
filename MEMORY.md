@@ -17,8 +17,8 @@ MIT licensed. No runtime, no server, no database, no users.
 - Stage: hardening pass — P0/P1 fixes, docs truth pass, Node 22 floor, Windows CI.
 - Last verified tests: 51 passed, 1 skipped, 0 failed (52 total) — Node 26.13.0,
   Windows 11, 2026-11-25.
-- Last verified CI: the `v1.1.0` runs are recorded in `docs/PROJECT-STATUS.md`; this branch
-  has not been pushed, so its matrix run is pending.
+- Last verified CI: run `45591502306` — success, 4/4 jobs on Node 22/24 × Ubuntu/Windows
+  (commit `3752be8`, 2026-11-25).
 
 ## Decisions
 

@@ -42,9 +42,9 @@ Suites: version 18 · install 10 · agents 9 · setup-project 15.
 
 CI matrix: Node 22 and 24 on `ubuntu-latest` and `windows-latest`. The skipped rollback
 test runs on the Ubuntu jobs, and the installer and setup CLI get a smoke test on every
-combination. This branch has not been pushed yet, so its matrix run is pending; the last
-green runs are recorded below.
+combination.
 
+Run `45591502306` (1.2.0 commit `3752be8`): **success** — 4/4 jobs, Node 22/24 × Ubuntu/Windows.
 Run `45378930334` (v1.0.0 commit): **success** — 15/15 on Node 20 and 22.
 Run `45382872606` (v1.1.0 commit): **success** — 23/23, 0 skipped on Node 20 and 22,
 installer smoke test included.

@@ -137,8 +137,8 @@ Env:     Node 26.13.0, Windows 11, 2026-11-25
 Skip:    version rollback test — directory permissions are not enforced on Windows
 ```
 
-The 2 × 2 CI matrix has not run for this commit yet; it is configured in
-`.github/workflows/ci.yml` and runs on push.
+The 2 × 2 CI matrix run `45591502306` on commit `3752be8` is **success** (4/4 jobs:
+Node 22/24 × Ubuntu/Windows).
 
 ## [1.1.0] - 2026-11-24
 

@@ -132,8 +132,15 @@ Result:  success — verify (node 20) 10s, verify (node 22) 13s
 Env:     GitHub Actions, ubuntu-latest, 2026-11-24  (last published-tag run)
 ```
 
-The `fix/p0-hardening` branch has not been pushed, so the 2 × 2 matrix run for `1.2.0` is
-still pending. Nothing in this file claims it is green.
+```text
+Command: gh run view 45591502306
+Result:  success — 4/4 jobs: verify (ubuntu-latest, node 22/24) and
+         verify (windows-latest, node 22/24); all steps green
+Env:     GitHub Actions, 2026-11-25, commit 3752be8
+```
+
+The `fix/p0-hardening` branch is pushed and `main` was fast-forwarded to the same commit.
+Both refs point at the same commit; no force-push was used.
 
 ## Broken / failing
 
@@ -141,10 +148,10 @@ Nothing known.
 
 ## Next 3 actions
 
-1. Review the `fix/p0-hardening` diff, then push and confirm the 2 × 2 CI matrix on Node 22
-   and 24, Ubuntu and Windows. Push needs explicit approval.
-2. Decide the release: tag `v1.2.0` (minor — the Unreleased section carries Added features)
+1. Decide the release: tag `v1.2.0` (minor — the Unreleased section carries Added features)
    and publish, or keep `1.2.0` unreleased for longer. `v1.0.0`/`v1.1.0` stay immutable.
+2. Re-check the README one-prompt installer on a real second machine (project-only and
+   global) and record the observed paths.
 3. Implement **P0 only** of `docs/DRISHTI-BROWSER-AI-PLAN.md` in the Drishti repo after
    separate approval: pin CI actions, add `typecheck` + `version:verify` gates, release
    preflight and checksum, real security contact. Read
