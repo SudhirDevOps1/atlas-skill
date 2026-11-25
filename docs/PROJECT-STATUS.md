@@ -19,7 +19,7 @@ Updated: 2026-11-25
 | Worked examples | shipped | `examples/` |
 | Version + agent drift gates in CI | shipped | `.github/workflows/ci.yml` |
 | Memory set (AGENTS/MEMORY/HANDOFF/TASKS/ASSUMPTIONS) | shipped | repo root |
-| Releases | published | `v1.0.0`, `v1.1.0`, `v1.2.0` |
+| Releases | published | `v1.0.0`, `v1.1.0`, `v1.2.0` (Latest, release notes published 2026-11-25) |
 
 ## Not built (deliberate)
 

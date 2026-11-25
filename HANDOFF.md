@@ -14,6 +14,10 @@ The tag points at the release commit `2e30e19` (code + changelog). The memory do
 record the post-release state; that is why `HANDOFF.md` and `TASKS.md` mention the tag that
 `2e30e19` itself does not yet contain.
 
+Release page: <https://github.com/SudhirDevOps1/atlas-skill/releases/tag/v1.2.0> — published
+2026-11-25, not a draft, not a prerelease, marked **Latest**, body is the `[1.2.0]` changelog
+section.
+
 ## Changed this session
 
 - Repository visibility: private → **public**; topics added; description kept.
