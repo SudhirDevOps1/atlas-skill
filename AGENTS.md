@@ -2,22 +2,25 @@
 
 ## Purpose
 
-Public repository. It ships three artifacts and one helper:
+Public repository. It ships three text artifacts and four helper CLIs:
 
 1. `ATLAS-MASTER-PROMPT.md` — the full rulebook for a coding agent.
 2. `UNIVERSAL-AGENT-PROMPT.md` — the approval-first operating contract (13 sections).
-3. `atlas-project-architect/` — the installable skill (`SKILL.md` + references + templates + version tool).
+3. `atlas-project-architect/` — the installable skill (`SKILL.md` + 13 references + 6 templates + 15-role agent team + version tool).
 4. `scripts/install-skill.mjs` — copies the skill into any supported agent's skills directory.
+5. `scripts/generate-agents.mjs` — generates the 30 host-specific agent files from `agent-roles.json`.
+6. `scripts/setup-project.mjs` — installs the skill, agents and MCP config into one project.
+7. `atlas-project-architect/scripts/version.mjs` — the SSOT version tool.
 
-There is no runtime, no server, no database and no users. The product is text plus two CLIs.
+There is no runtime, no server, no database and no users. The product is text plus four CLIs.
 
 ## Stack
 
 | Layer | Choice |
 |---|---|
-| Runtime (tooling) | Node >= 18, ESM, **zero dependencies** |
+| Runtime (tooling) | Node >= 22, ESM, **zero dependencies** |
 | Tests | `node:test` + `node:assert`, black-box via child process |
-| CI | GitHub Actions, `ubuntu-latest`, Node 20 and 22 |
+| CI | GitHub Actions, `ubuntu-latest` + `windows-latest`, Node 22 and 24 |
 | Package manager | none required; pnpm/npm only execute scripts |
 | Visuals | hand-authored `assets/banner.svg` |
 | License | MIT |
@@ -35,12 +38,18 @@ There is no runtime, no server, no database and no users. The product is text pl
 │   ├── README.md
 │   ├── references/00-12
 │   ├── assets/templates/
+│   ├── agent-roles.json           <- role SSOT
+│   ├── agents/{opencode,antigravity}/  <- 30 generated files
 │   └── scripts/version.mjs        <- SSOT tool
 ├── scripts/install-skill.mjs      <- installer
-├── tests/version.test.mjs · install.test.mjs
+├── scripts/generate-agents.mjs    <- role SSOT → agent files
+├── scripts/setup-project.mjs      <- one-project setup
+├── tests/version · install · agents · setup-project
 ├── docs/AGENT-COMPATIBILITY.md · SKILL-STACK.md · PROJECT-SETUP.md · PROJECT-STATUS.md · TESTING.md · DRISHTI-BROWSER-AI-PLAN.md
 ├── examples/greenfield.md · brownfield-audit.md
-└── .github/workflows/ci.yml
+├── ATLAS_AGENT_ROLE_MAP.md
+├── ASSUMPTIONS.md
+└── .github/workflows/ci.yml · dependabot.yml
 ```
 
 ## Commands
@@ -48,7 +57,11 @@ There is no runtime, no server, no database and no users. The product is text pl
 ```bash
 node --check atlas-project-architect/scripts/version.mjs   # syntax
 node --check scripts/install-skill.mjs                     # syntax
-node --test tests/version.test.mjs tests/install.test.mjs   # 23 tests
+node --check scripts/generate-agents.mjs                   # syntax
+node --check scripts/setup-project.mjs                     # syntax
+node --test tests/version.test.mjs tests/install.test.mjs \
+           tests/agents.test.mjs tests/setup-project.test.mjs   # 52 tests
+node scripts/generate-agents.mjs --check                   # agent drift gate
 node atlas-project-architect/scripts/version.mjs verify    # SSOT drift gate
 pnpm run verify                                            # all of the above
 ```
@@ -72,7 +85,7 @@ pnpm run verify                                            # all of the above
 ## Do not change without approval
 
 - The behaviour contract in `atlas-project-architect/references/07-versioning-ssot.md` and `version.mjs`.
-- The installer's overwrite guard: it must never replace an existing copy without `--force`.
+- The installer's overwrite guard: it must never replace an existing copy without `--force`, and never resolve to or inside its own source folder.
 - Published tags and releases — `v1.0.0` and `v1.1.0` are immutable.
 
 ## Where to look first

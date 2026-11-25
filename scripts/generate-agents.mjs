@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ATLAS sub-agent generator — zero dependencies, Node 18+.
+ * ATLAS sub-agent generator — zero dependencies, Node 22+.
  *
  * Generates real sub-agent definitions for OpenCode and Antigravity from ONE
  * source of truth: atlas-project-architect/agent-roles.json.

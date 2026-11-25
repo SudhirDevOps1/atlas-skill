@@ -93,8 +93,8 @@ node --test tests/agents.test.mjs
 node atlas-project-architect/scripts/version.mjs verify
 ```
 
-Evidence (2026-11-24, `pnpm run verify`): 32 tests, **31 pass / 0 fail / 1 skip**
+Evidence (2026-11-25, `pnpm run verify`): 52 tests, **51 pass / 0 fail / 1 skip**
 (the skip is the pre-existing Windows directory-permission test), then
 `check OK: 30 agent files match the SSOT (15 roles x 2 hosts)` and
-`OK — 1.1.0 in sync (stable, code 10100900)`. `node --check scripts/generate-agents.mjs`
+`OK — 1.2.0 in sync (stable, code 10200900)`. `node --check scripts/generate-agents.mjs`
 exited 0. A command not run is reported as **NOT RUN**, never as pass.

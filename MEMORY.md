@@ -4,19 +4,21 @@
 
 ## Overview
 
-Public repository shipping two artifacts and one helper: a master prompt for coding
-agents, a portable skill that turns "build me this" into a researched, tested,
-documented, deployable project, and an installer that puts the skill where an agent
-reads it.
+Public repository shipping three text artifacts and four CLIs: a master prompt for coding
+agents, a paste-ready approval contract, a portable skill that turns "build me this" into a
+researched, tested, documented, deployable project, an installer, an agent generator, a
+one-project setup tool and an SSOT version tool.
 
 MIT licensed. No runtime, no server, no database, no users.
 
 ## Current state
 
-- Version: 1.1.0
-- Stage: v1.1.0 shipped — public, MIT, installable in 60+ agents.
-- Last verified tests: 22 passed, 1 skipped, 0 failed — Node 26.13.0, Windows 11, 2026-11-24.
-- Last verified CI: see `docs/PROJECT-STATUS.md`.
+- Version: 1.2.0 (unreleased — branch `fix/p0-hardening`; `v1.1.0` is the last published tag).
+- Stage: hardening pass — P0/P1 fixes, docs truth pass, Node 22 floor, Windows CI.
+- Last verified tests: 51 passed, 1 skipped, 0 failed (52 total) — Node 26.13.0,
+  Windows 11, 2026-11-25.
+- Last verified CI: the `v1.1.0` runs are recorded in `docs/PROJECT-STATUS.md`; this branch
+  has not been pushed, so its matrix run is pending.
 
 ## Decisions
 
@@ -34,6 +36,14 @@ MIT licensed. No runtime, no server, no database, no users.
 | 2026-11-24 | Use only the common skill subset (`name` + `description`) | identical behaviour on every agent; no silent capability differences | `allowed-tools`, hooks, `context: fork` |
 | 2026-11-24 | Installer refuses to overwrite without `--force` | never destroy a local edit silently | last-write-wins |
 | 2026-11-24 | Copy, never symlink | Windows symlinks need Developer Mode; a copy always works | symlink installs |
+| 2026-11-25 | Installer compares real paths, case-insensitively on Windows | a lowercased `--dest` deleted the source folder on a case-insensitive filesystem | string equality on `path.resolve()` |
+| 2026-11-25 | Installer copies to a sibling temp dir, then swaps | a failed copy can no longer destroy the previous install | delete-then-copy |
+| 2026-11-25 | Version tool scans JSON depth instead of regexing `"version"` | npm's `scripts.version` can precede the root key and was being rewritten instead of the SSOT | first-match regex |
+| 2026-11-25 | `versionCode` rejects minor/patch > 99 | the packing formula collided (`1.100.0` and `2.0.0` both mapped to `20000900`) | silently colliding codes |
+| 2026-11-25 | Setup merges are BOM-aware and skip no-op writes | PowerShell 5.1 configs start with a BOM; a 0-added merge reformatted and backed up for nothing | strip-and-rewrite |
+| 2026-11-25 | Playwright MCP pinned to `0.0.86` and labelled local, not read-only | `@latest` is unpinned supply chain, and the server can click and type | floating `@latest`, "read-only" claim |
+| 2026-11-25 | Node floor `>=22`; CI on 22 + 24, Ubuntu + Windows | Node 18/20 are EOL in Nov 2026, and the skipped rollback test needs a Windows job | Node 18/20, Linux-only |
+| 2026-11-25 | Backup folder is self-ignoring (`.atlas-setup/.gitignore` = `*`) | backups can contain an existing config with credentials | telling users to remember a `.gitignore` line |
 
 ## Discoveries
 
@@ -57,6 +67,16 @@ MIT licensed. No runtime, no server, no database, no users.
 - `node --test` skips nothing silently — the skipped rollback test is explicit in output.
 - GitHub deprecated the Node 20 runtime for Actions in late 2025; `checkout@v4` /
   `setup-node@v4` trigger a warning. v5 SHAs are current.
+- npm reserves `scripts.version` as a lifecycle hook. A `"version"` regex can match it
+  before the root key, so `show` reported the wrong version and `set` rewrote the script.
+- A lowercased Windows path still resolves to the same folder. Comparing
+  `path.resolve()` strings is not enough; `realpathSync.native()` + lowercasing is.
+- `JSON.parse` rejects a leading U+FEFF even when the file is valid UTF-8. Read the bytes,
+  detect the BOM, parse the remainder, and write the BOM back.
+- A merge that adds zero keys still reformats the file unless it returns early. Guard on
+  `added === 0`, not on "the serialized output differs".
+- `versionCode = major*10000 + minor*100 + patch` needs minor and patch bounded to 0–99,
+  otherwise two different versions share a code.
 
 ## Failed approaches
 
@@ -77,7 +97,9 @@ MIT licensed. No runtime, no server, no database, no users.
 - The installer copies the folder; it does not edit any agent configuration. That is
   deliberate, but it means an agent with a non-standard config needs a manual path.
 - The rollback test is skipped on Windows (directory permissions are not enforced there);
-  it runs on Linux CI.
+  it runs on the Ubuntu CI job.
+- Setup is resumable, not transactional: a failure after the first action leaves the
+  completed actions in place and prints how to resume. Only the version tool rolls back.
 
 ## Dependencies of note
 

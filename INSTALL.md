@@ -15,7 +15,7 @@ Warp, Zed, Droid, Qwen Code, Kiro, Continue and OpenHands.
 | Need | Why |
 |---|---|
 | An agent that supports `SKILL.md` | It reads the folder. Anything on the list above does. |
-| Node 18+ | Only for `scripts/version.mjs` and the installer. The skill itself needs nothing. |
+| Node 22+ | Only for `scripts/version.mjs` and the installer. The skill itself needs nothing. |
 | Git | Only if you clone. A ZIP download works the same. |
 
 Nothing else. No API key, no config file, no global install.
@@ -286,7 +286,7 @@ Remove-Item -Recurse "$env:USERPROFILE\.claude\skills\atlas-project-architect"
 | Skill listed but ignored | Task too small (a snippet, a regex) | Expected — the skill stays out of the way |
 | `SKILL.md not found` | Wrong nesting, e.g. `skills/atlas-project-architect/atlas-project-architect/` | The folder must sit directly under the skills directory |
 | Agent cannot read references | Files copied without the subfolders | Copy the whole folder, not just `SKILL.md` |
-| `node: command not found` | Node not installed | Install Node 18+; the skill still works without it, the version tool does not |
+| `node: command not found` | Node not installed | Install Node 22+; the skill still works without it, the version tool does not |
 | Installer says "already exists" | A previous install | Add `--force` |
 | Two copies, confusing behaviour | Both project and global installed | Keep one; project scope wins for that repo |
 

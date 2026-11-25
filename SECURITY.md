@@ -36,7 +36,13 @@ In scope:
 - `atlas-project-architect/scripts/version.mjs` — path traversal, unintended
   file writes, rollback failure, command injection through crafted input.
 - `scripts/install-skill.mjs` — writing outside the requested destination,
-  overwriting without `--force`, following a symlink out of the target.
+  overwriting without `--force`, following a symlink out of the target, or
+  deleting its own source through a case-variant path.
+- `scripts/setup-project.mjs` — writing outside the target project, touching
+  global agent config, clobbering an existing server or file without `--force`,
+  leaking a secret into a generated config, or leaving a backup readable by git.
+- `scripts/generate-agents.mjs` — emitting a file outside `agents/`, or writing a
+  permission broader than the role SSOT declares.
 - Prompt content that could cause an agent to exfiltrate secrets, run
   untrusted code, or destroy data without approval.
 
@@ -46,6 +52,9 @@ Out of scope:
   OpenCode, …). Report those to their vendors.
 - A model ignoring the skill's instructions. Models are not deterministic; the
   skill reduces risk, it does not enforce it.
+- The MCP servers the setup tool configures (`context7`, Playwright, GitHub,
+  Supabase). They are third-party processes; this repository only writes the
+  connection entry.
 - Findings that require an already-compromised machine or a malicious local
   user with write access to the repository.
 

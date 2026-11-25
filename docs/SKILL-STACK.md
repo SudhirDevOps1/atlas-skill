@@ -226,7 +226,7 @@ and hands. All of these are third-party processes — read the command before yo
 | Server | What it adds | Command / config | License |
 |---|---|---|---|
 | **Context7** | Current library docs instead of remembered APIs | `npx ctx7 setup`, or URL `https://mcp.context7.com/mcp` | MIT |
-| **Playwright** | Real browser: click, type, screenshot, console, network | `claude mcp add playwright npx @playwright/mcp@latest` | Apache-2.0 |
+| **Playwright** | Real browser: click, type, screenshot, console, network | `claude mcp add playwright npx @playwright/mcp@0.0.86` (pinned — see note) | Apache-2.0 |
 | **Chrome DevTools** | Performance traces, DOM, console, network from a live Chrome | `npx -y chrome-devtools-mcp@latest` | Apache-2.0 |
 | **GitHub** | Issues, PRs, checks, code search | `docker run -i --rm -e GITHUB_PERSONAL_ACCESS_TOKEN ghcr.io/github/github-mcp-server` | MIT |
 | **Supabase** | Project schema, migrations, logs, advisors | `https://mcp.supabase.com/mcp?project_ref=<ref>&read_only=true` | Apache-2.0 |
@@ -236,6 +236,10 @@ and hands. All of these are third-party processes — read the command before yo
 Minimum useful set for a frontend + backend project: **Context7 + Playwright + GitHub**.
 Add Supabase or Postgres only if the project has that database. Add REA only when source
 cannot answer the question.
+
+> **Pin what you run.** `@latest` on an MCP server is unpinned supply chain: the next
+> `npx` can execute a different build. `scripts/setup-project.mjs` pins Playwright to
+> `0.0.86`; do the same for the other entries when you copy a command from this table.
 
 OpenCode config nests servers under `mcp.servers`; add one with
 `opencode mcp add <name> --url <url> [--global]`, then check `opencode mcp list`. Claude

@@ -1,12 +1,13 @@
-# HANDOFF — 2026-11-24
+# HANDOFF — 2026-11-25
 
-Current version: 1.1.0
+Current version: 1.2.0
 
 ## State
 
-v1.1.0 is the public release. The repository is MIT licensed, installable in any agent
-that reads `SKILL.md`, and still managed by its own skill: one version SSOT, two tested
-CLIs, CI with a drift gate, and the memory set.
+v1.1.0 is the last published release; `1.2.0` is the unreleased hardening candidate on
+branch `fix/p0-hardening`. The repository is MIT licensed, installable in any agent that
+reads `SKILL.md`, and still managed by its own skill: one version SSOT, four tested CLIs,
+an agent-SSOT drift gate, CI with version and agent drift gates, and the memory set.
 
 ## Changed this session
 
@@ -74,18 +75,49 @@ CLIs, CI with a drift gate, and the memory set.
   `atlas-project-architect/README.md` and `AGENTS.md`.
 - `D:\coding project\chrome extension` was read-only context; no file there was modified.
 
+### Session — 2026-11-25 (hardening)
+
+Two P0 bugs were reproduced first, then fixed; P1 gaps were closed; docs were corrected to
+match the code.
+
+- `scripts/install-skill.mjs` — **P0**: a lowercased `--dest` resolved to the source folder
+  on Windows and the pre-copy delete removed `SKILL.md`. The installer now resolves real
+  paths, compares case-insensitively on Windows, refuses a destination inside the source,
+  and copies to a sibling temp directory before swapping.
+- `atlas-project-architect/scripts/version.mjs` — **P0**: the `"version"` regex matched
+  npm's `scripts.version` hook, so `show` reported the script and `set` rewrote it while the
+  root version stayed put. A depth-aware scanner now reads and writes only the top-level
+  key. Also: unknown flags exit `2`, `--help` exists, and `minor`/`patch` above 99 are
+  rejected because `versionCode` collided (`1.100.0` and `2.0.0` → `20000900`).
+- `scripts/setup-project.mjs` — BOM-aware config read/write, no rewrite or backup when a
+  merge adds nothing, a pinned Playwright MCP (`0.0.86`) instead of `@latest`, a
+  self-ignoring `.atlas-setup/.gitignore`, ancestor-directory preflight, and a resumable
+  failure message. The header and `--list` no longer call Playwright read-only.
+- `package.json` — `setup:apply` now actually passes `--apply`; `engines.node` is `>=22`.
+- Tests — 15 new regression cases (version 18, install 10, agents 9, setup 15 = 52).
+- CI — Node 22/24 × Ubuntu/Windows matrix; `shell: bash`; portable `mktemp -d`.
+- `.github/dependabot.yml` — monthly, GitHub Actions only.
+- Docs — README, AGENTS, MEMORY, TASKS, ASSUMPTIONS, SECURITY, PROJECT-STATUS, TESTING,
+  PROJECT-SETUP and the skill README corrected to the real counts, matrix and wording.
+
 ## Verified
 
 ```text
-Command: node --test tests/version.test.mjs tests/install.test.mjs
-Result:  22 passed, 1 skipped, 0 failed (5.2s)
-Env:     Node 26.13.0, Windows 11, 2026-11-24
-Skip:    rollback test — directory permissions are not enforced on Windows
+Command: node --test tests/version.test.mjs tests/install.test.mjs \
+                   tests/agents.test.mjs tests/setup-project.test.mjs
+Result:  51 passed, 1 skipped, 0 failed (52 total)
+Env:     Node 26.13.0, Windows 11, 2026-11-25
+Skip:    version rollback test — directory permissions are not enforced on Windows
+```
+
+```text
+Command: node scripts/generate-agents.mjs --check
+Result:  check OK: 30 agent files match the SSOT (15 roles x 2 hosts)
 ```
 
 ```text
 Command: node atlas-project-architect/scripts/version.mjs verify
-Result:  OK — 1.1.0 in sync (stable, code 10100900)
+Result:  OK — 1.2.0 in sync (stable, code 10200900)
 ```
 
 ```text
@@ -97,18 +129,11 @@ Result:  20 agents, project + global paths (source: vercel-labs/skills docs/agen
 Command: gh run view 45382872606
 Result:  success — verify (node 20) 10s, verify (node 22) 13s
          23/23 tests, 0 skipped, installer smoke test passed
-Env:     GitHub Actions, ubuntu-latest, 2026-11-24
+Env:     GitHub Actions, ubuntu-latest, 2026-11-24  (last published-tag run)
 ```
 
-CI for this commit: `45382872606`, green on both Node versions.
-
-```text
-Command: pnpm run verify
-Result:  43 tests — 42 pass, 0 fail, 1 skipped; 30 agent files match the SSOT;
-         version 1.1.0 in sync (stable, code 10100900)
-Env:     Node 26.13.0, Windows 11, 2026-11-25
-Skip:    rollback test — directory permissions are not enforced on Windows
-```
+The `fix/p0-hardening` branch has not been pushed, so the 2 × 2 matrix run for `1.2.0` is
+still pending. Nothing in this file claims it is green.
 
 ## Broken / failing
 
@@ -116,20 +141,21 @@ Nothing known.
 
 ## Next 3 actions
 
-1. Implement **P0 only** of `docs/DRISHTI-BROWSER-AI-PLAN.md` in the Drishti repo after
+1. Review the `fix/p0-hardening` diff, then push and confirm the 2 × 2 CI matrix on Node 22
+   and 24, Ubuntu and Windows. Push needs explicit approval.
+2. Decide the release: tag `v1.2.0` (minor — the Unreleased section carries Added features)
+   and publish, or keep `1.2.0` unreleased for longer. `v1.0.0`/`v1.1.0` stay immutable.
+3. Implement **P0 only** of `docs/DRISHTI-BROWSER-AI-PLAN.md` in the Drishti repo after
    separate approval: pin CI actions, add `typecheck` + `version:verify` gates, release
    preflight and checksum, real security contact. Read
    `references/12-browser-extension-mcp.md` first; remove nothing.
-2. Authenticate `github` and `supabase` in OpenCode (`opencode mcp auth <name>`) and in
-   Antigravity (Customizations → MCP Servers → Authenticate). Postgres stays disabled
-   until `DATABASE_URI` is set; then remove `disabled: true` in both configs.
-3. Build the eval harness for skill behaviour: 3–5 prompts, rubric, recorded output.
 
 ## Do not change
 
 - `LICENSE` terms (MIT) without an explicit decision and a changelog entry.
 - The published tags and releases — `v1.0.0` and `v1.1.0` are immutable.
-- The installer's overwrite guard: no silent replacement without `--force`.
+- The installer's overwrite guard: no silent replacement without `--force`, and no path
+  that resolves to its own source.
 - The `version.mjs` behaviour contract without updating tests and reference 07.
 
 ## Environment notes

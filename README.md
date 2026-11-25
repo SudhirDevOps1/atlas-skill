@@ -4,11 +4,11 @@
 
 <br><br>
 
-[![Version](https://img.shields.io/badge/version-1.1.0-E8A33D?style=flat-square)](#versioning--one-source-of-truth)
+[![Version](https://img.shields.io/badge/version-1.2.0-E8A33D?style=flat-square)](#versioning--one-source-of-truth)
 [![License](https://img.shields.io/badge/license-MIT-2F81F7?style=flat-square)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%E2%89%A518-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
+[![Node](https://img.shields.io/badge/node-%E2%89%A522-3C873A?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-2F81F7?style=flat-square)](#versioning--one-source-of-truth)
-[![Tests](https://img.shields.io/badge/tests-43-0F766E?style=flat-square)](docs/TESTING.md)
+[![Tests](https://img.shields.io/badge/tests-52-0F766E?style=flat-square)](docs/TESTING.md)
 [![Agents](https://img.shields.io/badge/agents-60%2B-6B7C8F?style=flat-square)](docs/AGENT-COMPATIBILITY.md)
 
 ### Turn “build me this” into a project that survives week two.
@@ -65,7 +65,9 @@ Full matrix, chat-UI fallback, updating and troubleshooting:
 **[`INSTALL.md`](INSTALL.md)** · per-agent paths and sources:
 **[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md)**
 
-Want the skill, the 15-role agent team and four read-only MCP servers in one project?
+Want the skill, the 15-role agent team and four MCP servers in one project? Three are
+read-only by construction (context7, GitHub `/readonly`, Supabase `read_only=true`);
+Playwright is a local browser-automation process, not a read-only server.
 **[`docs/PROJECT-SETUP.md`](docs/PROJECT-SETUP.md)** — preview first, `--apply` only after
 approval.
 
@@ -206,7 +208,7 @@ stop and report what you ran, what you saw, and the safest next option. Never gu
    pnpm -r run build
    pnpm test
    pnpm typecheck
-   pnpm version:verify
+   pnpm version:verify   # only if package.json defines it; otherwise record NOT RUN
    Confirm apps/chrome-extension/dist/manifest.json exists before continuing.
 
 3. Generate a local auth token and keep it out of git:
@@ -249,10 +251,11 @@ Hard rules:
 a Chrome permission dialog, and cannot decide that a broad host permission is acceptable on
 your behalf. Those stay human steps.
 
-**Why this version is stricter than a plain install prompt.** It gates on `pnpm typecheck`
-and `pnpm version:verify`, verifies the token is actually gitignored, and forbids deleting a
-tool or weakening a test — the three ways an “auto-install” quietly produces a broken or
-unsafe setup.
+**Why this version is stricter than a plain install prompt.** It gates on `pnpm typecheck`,
+runs `pnpm version:verify` only when the repository defines that script (the audit shows it
+is a P0 addition, not an existing gate), verifies the token is actually gitignored, and
+forbids deleting a tool or weakening a test — the ways an “auto-install” quietly produces a
+broken or unsafe setup.
 
 Then hand the agent the domain knowledge it needs:
 
@@ -299,6 +302,8 @@ Every claim of “done” carries a command and its real output. If it wasn’t 
 | **`UNIVERSAL-AGENT-PROMPT.md`** | The operating contract — 13 sections: roles, preservation, research, approval policy, final report | Paste when you want approval before every edit; pairs with or without the skill |
 | **`docs/SKILL-STACK.md`** | Which outside skill and MCP server to install per domain, per agent | Building the rest of the stack around ATLAS |
 | **`scripts/install-skill.mjs`** | Zero-dependency installer for 20 agents | Putting the skill where your agent reads it |
+| **`scripts/setup-project.mjs`** | Installs the skill, 15 agents and a read-first MCP config into one project | Preview first; `--apply` only after approval |
+| **`scripts/generate-agents.mjs`** | Generates the 30 host-specific agent files from `agent-roles.json` | Changing the team; `--check` is the CI drift gate |
 | **`scripts/version.mjs`** (inside the skill) | Zero-dependency SSOT version tool | Any project that ships more than once |
 
 The skill is the operational core. The master prompt is the same thinking, expanded. The
@@ -348,12 +353,18 @@ the bundled script — run it per package, or use `pnpm -r run version:sync`.
 │   ├── SKILL.md                    trigger + core loop
 │   ├── references/                 00 → 12: 10 phase files + 3 packs
 │   ├── assets/templates/           AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · PROJECT-INPUT
+│   ├── agent-roles.json            single source of truth for the 15 roles
+│   ├── agents/                     30 generated OpenCode + Antigravity files
 │   └── scripts/version.mjs         SSOT tool
 ├── scripts/install-skill.mjs       installer for 20 agents
-├── tests/                          version.test.mjs · install.test.mjs
-├── docs/                           AGENT-COMPATIBILITY · SKILL-STACK · PROJECT-STATUS · TESTING
+├── scripts/setup-project.mjs       one-project skill + agents + MCP setup
+├── scripts/generate-agents.mjs     role SSOT → host agent files
+├── tests/                          version · install · agents · setup-project
+├── docs/                           AGENT-COMPATIBILITY · SKILL-STACK · PROJECT-STATUS ·
+│                                   TESTING · PROJECT-SETUP · DRISHTI-BROWSER-AI-PLAN
 ├── examples/                       greenfield · brownfield audit
-├── .github/workflows/ci.yml        Node 20 + 22, tests, drift gate
+├── .github/workflows/ci.yml        Node 22 + 24, Ubuntu + Windows, tests, drift gates
+├── .github/dependabot.yml          keeps pinned Actions current
 └── AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · SECURITY
 ```
 
@@ -379,7 +390,7 @@ The skill is applied to its own repository — not just documented:
 | Practice | Where |
 |---|---|
 | One source of truth for the version | `package.json` → `version:sync` regenerates the badge, changelog, docs and memory lines |
-| Tests before claims | `tests/`, run in CI on Node 20 and 22 |
+| Tests before claims | `tests/`, run in CI on Node 22 and 24, Ubuntu and Windows |
 | Drift gate | CI fails if any generated surface disagrees with the SSOT |
 | Continuity | `AGENTS.md` · `MEMORY.md` · `HANDOFF.md` · `TASKS.md` · `ASSUMPTIONS.md` |
 | Honest status | [`docs/PROJECT-STATUS.md`](docs/PROJECT-STATUS.md) lists what is not built |
@@ -393,11 +404,19 @@ A different agent can pick this up from `HANDOFF.md` alone.
 
 **Tested**
 
-- `version.mjs` — 15 black-box tests: bump / set / sync / verify / show, `--dry-run`,
-  drift detection, rollback on write failure, BOM preservation, both SSOT modes.
-- `install-skill.mjs` — 8 tests: agent matrix, copy scope, overwrite guard, `--dry-run`,
-  project/global resolution, usage errors, self-overwrite guard.
-- Both run in CI on Node 20 and 22.
+- `version.mjs` — 18 black-box tests: bump / set / sync / verify / show, `--dry-run`,
+  drift detection, rollback on write failure, BOM preservation, both SSOT modes, a
+  top-level `version` that sits after `scripts.version`, unknown flags, and the
+  `versionCode` bounds.
+- `install-skill.mjs` — 10 tests: agent matrix, copy scope, overwrite guard, `--dry-run`,
+  project/global resolution, usage errors, self-overwrite guard, a destination inside the
+  source folder, and the Windows case-variant path.
+- `agents.test.mjs` — 9 tests: 15 unique roles, gated permissions, verified Antigravity
+  tool names, generated frontmatter and the role-map/reference agreement.
+- `setup-project.test.mjs` — 15 tests: dry-run, install counts, nested `mcp.servers`, the
+  four endpoints (three read-only), idempotence, BOM configs, no-op rewrites, backup
+  gitignore, preflight refusals and `--force`.
+- 52 tests run in CI on Node 22 and 24, Ubuntu and Windows.
 
 **Not tested**
 
