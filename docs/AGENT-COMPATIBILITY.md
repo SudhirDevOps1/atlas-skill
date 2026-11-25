@@ -111,6 +111,81 @@ The bundled installer ships the common subset. For an agent that is not in
 
 ---
 
+## How you invoke it — `@`, `/`, `#`, `$`
+
+Hosts disagree about punctuation. There is no universal syntax, and a skill cannot ship
+a slash command of its own: the `/` menu is owned by the host, which may or may not
+generate a `/<skill-name>` entry from the folder it found.
+
+**Verified:** 2026-11-25, each row against the vendor's own documentation (links at the
+end of this section). If your installed version disagrees, the vendor wins.
+
+| Host | Attach context | Run a command or a skill | Other prefixes |
+|---|---|---|---|
+| Antigravity (App, CLI, IDE) | `@file`, `@folder`, `@rules:` and `@conversation:` (App only) | `/` menu; **a skill is auto-converted to `/<skill-name>`** | CLI: start a prompt with `@<subagent>` to message a subagent |
+| OpenCode | `@file`, `@agent`, `@skill-id` | `/command` | `!` shell |
+| Claude Code | `@path`, with optional line range `@file.ts#5-10` | `/command`, `/skill-name` | `!` shell |
+| Cursor | `@file`, `@folder`, `@Terminals`, `@Chats`, `@Commit`, `@Branch`, `@Browser` | `/` lists skills and commands | `&` hands off to a Cloud Agent (CLI) |
+| Codex CLI | `@` fuzzy file search | `/` slash commands, `/skills`, `/mention` | `!` shell |
+| Codex desktop app | — | `/` commands; `$` invokes a skill explicitly | — |
+| GitHub Copilot (VS Code) | `#file`, `#codebase`, `#terminalSelection` — **not `@`** | `/` commands and agent skills | `!` shell |
+| Cline | `@` mentions | `/` built-in commands and skills | — |
+| Roo Code | `@` context mentions | `/` commands; modes are commands too | — |
+| Windsurf / Devin Desktop | `@` a past conversation | `/<workflow-name>` (Cascade) | — |
+| Zed | `@file`, `@symbol`, `@thread`, `@skill`, `@url` | `/` skills, `/compact` | — |
+| Gemini CLI | `@path` (file or directory) | `/command`, `/skills`, `/plan` | `!` shell |
+
+Not re-checked on 2026-11-25: Amp, Warp, Droid, Kilo Code `@` mentions. Treat their
+column as unknown rather than supported.
+
+### What this means for ATLAS
+
+| Host | Shortest reliable way to invoke it |
+|---|---|
+| Antigravity | `/atlas-project-architect`, or just describe the task |
+| OpenCode | `@atlas-project-architect` |
+| Claude Code | `/atlas-project-architect`, or describe the task |
+| Cursor, Zed, Codex, Cline, Roo | `/<skill-name>` if it appears in the menu; otherwise describe the task |
+| GitHub Copilot | `#` is context only — name the skill in words |
+| Any host | `Use the atlas-project-architect skill.` |
+
+Three things worth knowing:
+
+- **`/plan` is not ATLAS.** It is each host's own read-only planning mode — Antigravity,
+  Claude Code, Cursor, Codex and Gemini CLI all ship one. It plans; it does not research,
+  gate approvals, version, or write `MEMORY.md`/`HANDOFF.md`. ATLAS's PLAN step is step 2
+  of its core loop, not a command.
+- **`/<skill-name>` exists only if the host generates it.** Antigravity and Zed do this for
+  every skill; Claude Code, Cursor and Copilot list skills in the `/` menu. Where it does
+  not appear, plain language is the portable path, because the agent still sees the skill's
+  name and description on every turn.
+- **No autocomplete means not loaded.** If `/atlas-project-architect` is missing, the host
+  did not find the folder. Check the path in the table above, then start a new session —
+  most hosts scan the skills directory at startup.
+
+Sources: [Antigravity mentions](https://antigravity.google/docs/at-mentions/),
+[skills](https://antigravity.google/docs/skills/),
+[slash commands](https://antigravity.google/docs/slash-commands/) ·
+[OpenCode TUI](https://opencode.ai/docs/cli/tui/),
+[commands](https://opencode.ai/docs/commands/),
+[skills](https://opencode.ai/docs/skills/) ·
+[Claude Code interactive mode](https://code.claude.com/docs/en/interactive-mode),
+[skills](https://code.claude.com/docs/en/skills) ·
+[Cursor prompting](https://cursor.com/docs/agent/prompting),
+[CLI slash commands](https://cursor.com/docs/cli/reference/slash-commands) ·
+[Codex CLI](https://developers.openai.com/codex/developer-commands),
+[app slash commands](https://developers.openai.com/codex/reference/slash-commands) ·
+[Copilot chat](https://code.visualstudio.com/docs/copilot/copilot-chat) ·
+[Cline commands](https://docs.cline.bot/core-workflows/using-commands),
+[context](https://docs.cline.bot/core-workflows/working-with-files) ·
+[Roo Code](https://docs.roocode.com/features/slash-commands) ·
+[Kilo workflows](https://kilocode.ai/docs/customize/workflows) ·
+[Windsurf / Devin Desktop](https://docs.devin.ai/desktop/cascade) ·
+[Zed skills](https://zed.dev/docs/ai/skills), [agent panel](https://zed.dev/docs/ai/agent-panel) ·
+[Gemini CLI](https://geminicli.com/docs/reference/commands/).
+
+---
+
 ## Feature support
 
 From the same upstream table. "Basic skills" is all ATLAS needs.

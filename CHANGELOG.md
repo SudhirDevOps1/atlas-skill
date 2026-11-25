@@ -62,6 +62,11 @@ Nothing yet.
   prompt that clones the public repo, builds and proves every package, generates a
   gitignored token, wires the MCP server, starts the bridge on demand, and leaves the two
   browser steps to the human.
+- `docs/AGENT-COMPATIBILITY.md` — a "How you invoke it" section: which hosts use `@` for
+  context, which use `/` for commands and skills, and which use neither (`#` in GitHub
+  Copilot, `$` for explicit skill invocation in the Codex desktop app). Includes the
+  per-host way to invoke ATLAS and the distinction between a host's `/plan` and ATLAS's
+  own PLAN step. Verified against vendor documentation on 2026-11-25.
 
 ### Changed
 
@@ -88,6 +93,10 @@ Nothing yet.
   pack is wired into the phase playbook and the Tier B domain list.
 - `README.md`, `atlas-project-architect/README.md`, `AGENTS.md` — reference count corrected
   to thirteen files (`00`–`12`), with the three packs named separately from the ten phases.
+- `README.md` and `INSTALL.md` — explicit invocation now shows `/atlas-project-architect`
+  where the host converts an installed skill into a slash command, `@` only for OpenCode,
+  and plain language as the portable fallback. Corrects the earlier claim that the skill
+  has no slash command: the folder ships none, but Antigravity and Zed generate one.
 
 ### Fixed
 

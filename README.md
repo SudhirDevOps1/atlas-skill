@@ -126,8 +126,9 @@ install, verify, then explain how to use it. Never guess a path.
 
 6. Tell the user how to use it, in this order:
    - Open a NEW agent session so the host re-scans its skills directory.
-   - Trigger it: `@atlas-project-architect` (OpenCode) or "Use the atlas-project-architect
-     skill" in other hosts.
+   - Trigger it: `/atlas-project-architect` where the host turns skills into slash
+     commands (Antigravity, Zed, Claude Code, Cursor, Codex, Copilot), `@atlas-project-architect`
+     in OpenCode, or "Use the atlas-project-architect skill" anywhere.
    - Give the six inputs: GOAL · USERS · PLATFORM · DATA · BUDGET · DEADLINE.
    - Ask for the plan first: "Show me the plan and the files you will touch. No edits yet."
    - Do not paste the references; the skill loads one phase at a time on purpose.
@@ -195,13 +196,20 @@ it — confirm the skill and agents are discoverable in that session.
 **Load the skill explicitly when you want to be sure:**
 
 ```text
-@atlas-project-architect
+/atlas-project-architect
 Use this skill for this task. Read SKILL.md and only the references the task needs.
 Show me the plan first — no edits yet.
 ```
 
-`@atlas-project-architect` is the OpenCode form. In other hosts, say
-“Use the `atlas-project-architect` skill.”
+The punctuation is the host's, not the skill's. Antigravity, Zed, Claude Code, Cursor,
+Codex and Copilot turn an installed skill into a `/atlas-project-architect` command;
+OpenCode uses `@atlas-project-architect`; Copilot's `@` is not a context prefix at all
+(it uses `#`). Where no command appears, say “Use the `atlas-project-architect` skill.”
+The full `@` / `/` / `#` / `$` table is in
+[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md).
+
+`/plan` is a different thing: it is the host's own read-only planning mode. It plans,
+but it does not research, gate approvals, version, or write `MEMORY.md` / `HANDOFF.md`.
 
 **Delegate a bounded task:**
 

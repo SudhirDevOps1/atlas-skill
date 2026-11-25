@@ -174,7 +174,20 @@ on-demand reference loading. Prefer the skills directory.
 
    `atlas-project-architect` should be listed with its description.
 
-4. Trigger it without naming it:
+4. Invoke it by name once, to prove the wiring:
+
+   ```text
+   /atlas-project-architect
+   ```
+
+   Antigravity, Zed, Claude Code, Cursor, Codex and Copilot expose an installed skill as a
+   `/` command. OpenCode uses `@atlas-project-architect`. Copilot has no `@` context prefix
+   (it uses `#`), so say “Use the `atlas-project-architect` skill” there.
+
+   If no command appears, the host did not load the folder — recheck the path, then start
+   another session. `/plan` is the host's own planning mode, not this skill.
+
+5. Trigger it without naming it:
 
    ```text
    ye app banao: ek link-in-bio page jisme analytics ho
