@@ -65,6 +65,88 @@ Full matrix, chat-UI fallback, updating and troubleshooting:
 **[`INSTALL.md`](INSTALL.md)** · per-agent paths and sources:
 **[`docs/AGENT-COMPATIBILITY.md`](docs/AGENT-COMPATIBILITY.md)**
 
+### One-prompt install (any project, any detected agent)
+
+Paste this into the agent you already use. It detects which hosts are present, downloads
+ATLAS from GitHub only when the skill is not already on disk, installs project-scope by
+default, asks before writing anything global, verifies each target, and then explains how
+to use the skill.
+
+```xml
+<ATLAS_SKILL_INSTALL>
+Goal: install the atlas-project-architect skill for this project, and optionally for the
+user's global agent directories, using the repository's own installer. Detect, plan, ask,
+install, verify, then explain how to use it. Never guess a path.
+
+0. Preflight — report, do not install:
+   - OS and shell; node --version (must be >= 22); git --version.
+   - The project root (git rev-parse --show-toplevel, else the current directory).
+   - Which hosts are present. Check the filesystem, do not assume:
+       .opencode/ or opencode.json        -> opencode
+       .claude/ or ~/.claude/             -> claude-code
+       .cursor/ or .cursorrules           -> cursor
+       .codex/                            -> codex
+       ~/.gemini/config/                  -> antigravity
+       ~/.gemini/skills/                  -> gemini-cli
+       .copilot/ or .github/copilot*      -> copilot
+       .windsurf/ .roo/ .qwen/ .kiro/ .continue/ .openhands/ -> the matching id
+     If no host is detected, ask which one to target. Do not invent one.
+
+1. Get the skill — prefer what is already on disk:
+   - If ./atlas-project-architect/SKILL.md exists, use it.
+   - Else clone shallow into a temp directory:
+       git clone --depth 1 https://github.com/SudhirDevOps1/atlas-skill.git <tmp>
+     If git is unavailable, download the default-branch tarball and extract it.
+   - Verify <repo>/atlas-project-architect/SKILL.md exists and print its `name:` and
+     `description:` lines. If it does not, stop and report.
+
+2. Plan — print a table before writing:
+   - Run: node <repo>/scripts/install-skill.mjs --list
+   - For each detected host, take its project and global skills path from that table.
+   - Resolve every path to an ABSOLUTE path before passing --dest; the installer resolves a
+     relative --dest against the current directory, not against the project.
+   - Deduplicate identical paths: several hosts share .agents/skills. One copy per path.
+   - Default is project scope only. Global scope only if the user explicitly says yes.
+
+3. Ask one approval question:
+   "Install for: (a) this project only, (b) this project + global for the detected hosts,
+    or (c) global only?" Then install exactly that. No writes before the answer.
+
+4. Install — dry-run first, then the real run, once per unique path:
+     node <repo>/scripts/install-skill.mjs --dest <path> --dry-run
+     node <repo>/scripts/install-skill.mjs --dest <path>
+   - Never pass --force unless the user asked to update an existing copy; say that the old
+     copy is replaced.
+   - Never install into the repository's own source folder.
+   - If a copy exists and the user did not ask to update it, keep it and report "kept".
+
+5. Verify — for every target path, check <path>/atlas-project-architect/SKILL.md exists.
+   Report: host | scope | path | installed/kept | evidence.
+   Anything not executed is reported as NOT RUN, never as done.
+
+6. Tell the user how to use it, in this order:
+   - Open a NEW agent session so the host re-scans its skills directory.
+   - Trigger it: `@atlas-project-architect` (OpenCode) or "Use the atlas-project-architect
+     skill" in other hosts.
+   - Give the six inputs: GOAL · USERS · PLATFORM · DATA · BUDGET · DEADLINE.
+   - Ask for the plan first: "Show me the plan and the files you will touch. No edits yet."
+   - Do not paste the references; the skill loads one phase at a time on purpose.
+   - For the 15-role team and MCP config in one project, run
+     node scripts/setup-project.mjs --project <dir> (preview), read
+     docs/PROJECT-SETUP.md, then add --apply.
+
+Safety: no global write without an explicit yes; no secret, token or credential is written;
+no file is deleted; an existing copy is never replaced without --force; temp clones are
+removed at the end. If a step fails twice, stop and report the command, the output and the
+safest next option.
+</ATLAS_SKILL_INSTALL>
+```
+
+The same thing without an AI, from a clone: `node scripts/install-skill.mjs --agent
+opencode --scope project` (or `--scope global`), and `--dest <skills-dir>` when you already
+know the path. In a chat UI with no filesystem, paste `atlas-project-architect/SKILL.md`
+as the first message instead.
+
 Want the skill, the 15-role agent team and four MCP servers in one project? Three are
 read-only by construction (context7, GitHub `/readonly`, Supabase `read_only=true`);
 Playwright is a local browser-automation process, not a read-only server.
