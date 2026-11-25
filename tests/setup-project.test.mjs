@@ -89,7 +89,12 @@ test('--apply installs the skill once, 15 agents per host and read-only MCP conf
   assert.equal(r.code, 0, r.out);
 
   assert.ok(exists(dir, '.agents', 'skills', 'atlas-project-architect', 'SKILL.md'));
-  assert.equal(allFiles(path.join(dir, '.agents', 'skills', 'atlas-project-architect')).length, 52);
+  const installedSkill = path.join(dir, '.agents', 'skills', 'atlas-project-architect');
+  assert.equal(
+    allFiles(installedSkill).length,
+    allFiles(path.join(REPO, 'atlas-project-architect')).length,
+    'the installed skill must be a complete copy of the source folder',
+  );
   assert.equal(fs.readdirSync(path.join(dir, '.opencode', 'agents')).filter((f) => f.endsWith('.md')).length, 15);
   assert.equal(fs.readdirSync(path.join(dir, '.agents', 'agents')).filter((f) => f.endsWith('.md')).length, 15);
 
