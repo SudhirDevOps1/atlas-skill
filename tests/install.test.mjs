@@ -123,3 +123,23 @@ test('refuses to install over its own source folder', () => {
   assert.equal(r.code, 1);
   assert.match(r.out, /source folder/);
 });
+
+test('refuses a destination inside the skill source folder', () => {
+  const inside = path.join(REPO, 'atlas-project-architect', 'assets');
+  const r = run(['--dest', inside]);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /inside the skill source folder/);
+  assert.equal(exists(inside, 'atlas-project-architect'), false);
+});
+
+test('refuses a case-variant path to its own source on Windows', {
+  skip:
+    process.platform === 'win32'
+      ? false
+      : 'case-insensitive path comparison only applies on Windows',
+}, () => {
+  const r = run(['--dest', REPO.toLowerCase(), '--force']);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /source folder/);
+  assert.ok(exists(REPO, 'atlas-project-architect', 'SKILL.md'), 'source must survive');
+});

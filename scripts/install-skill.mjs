@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ATLAS skill installer — zero dependencies, Node 18+.
+ * ATLAS skill installer — zero dependencies, Node 22+.
  *
  * Copies atlas-project-architect/ into the skills directory an agent reads.
  * It never edits an agent's config and never installs anything else.
@@ -138,6 +138,58 @@ function assertSource() {
   }
 }
 
+/** Resolve to the real path when it exists; otherwise normalise the input. */
+function canonical(p) {
+  try {
+    return fs.realpathSync.native(p);
+  } catch {
+    return path.resolve(p);
+  }
+}
+
+/** Windows paths are case-insensitive, so a plain string compare is not enough. */
+function samePath(a, b) {
+  const ra = canonical(a);
+  const rb = canonical(b);
+  return process.platform === 'win32' ? ra.toLowerCase() === rb.toLowerCase() : ra === rb;
+}
+
+/** True when `child` is inside `parent` (not equal to it). */
+function isInside(parent, child) {
+  const rel = path.relative(canonical(parent), canonical(child));
+  return rel !== '' && !rel.startsWith('..') && !path.isAbsolute(rel);
+}
+
+/** Copy to a sibling temp dir, then swap, so a failed copy never destroys the old copy. */
+function installDirectory(src, target, skillsDir, exists) {
+  const stamp = `${process.pid}-${Date.now()}`;
+  const tmp = `${target}.tmp-${stamp}`;
+  const old = `${target}.old-${stamp}`;
+
+  fs.mkdirSync(skillsDir, { recursive: true });
+  fs.cpSync(src, tmp, { recursive: true });
+
+  try {
+    if (exists) fs.renameSync(target, old);
+    fs.renameSync(tmp, target);
+    if (exists) fs.rmSync(old, { recursive: true, force: true });
+  } catch (e) {
+    try {
+      if (fs.existsSync(tmp)) fs.rmSync(tmp, { recursive: true, force: true });
+    } catch {
+      /* best effort */
+    }
+    if (exists && fs.existsSync(old) && !fs.existsSync(target)) {
+      try {
+        fs.renameSync(old, target);
+      } catch {
+        /* best effort */
+      }
+    }
+    throw e;
+  }
+}
+
 function main() {
   const { flags, values } = parseArgs(process.argv.slice(2));
 
@@ -153,8 +205,11 @@ function main() {
   const force = flags.has('--force');
   const dry = flags.has('--dry-run');
 
-  if (path.resolve(target) === path.resolve(SRC)) {
+  if (samePath(target, SRC)) {
     throw new Fail(1, 'Target is the source folder. Pick a different skills directory.');
+  }
+  if (isInside(SRC, target)) {
+    throw new Fail(1, 'Target is inside the skill source folder. Pick a directory outside the repository.');
   }
 
   const exists = fs.existsSync(target);
@@ -171,9 +226,7 @@ function main() {
   console.log(`  to:   ${target}`);
   if (dry) return;
 
-  if (exists) fs.rmSync(target, { recursive: true, force: true });
-  fs.mkdirSync(skillsDir, { recursive: true });
-  fs.cpSync(SRC, target, { recursive: true });
+  installDirectory(SRC, target, skillsDir, exists);
 
   console.log(`\nDone. ${exists ? 'Replaced' : 'Installed'} ${SKILL_NAME}.`);
   console.log('Open a new agent session so it re-scans the skills directory.');
