@@ -21,16 +21,20 @@
 - [x] `1.2.0` hardening pass: P0 installer/version bugs fixed, setup CLI hardened,
       15 new regression tests, Node 22 floor, Ubuntu + Windows CI matrix.
 - [x] CI matrix green on Node 22/24 × Ubuntu/Windows — run `45591502306`, commit `3752be8`.
+- [x] Invocation docs: `@` / `/` / `#` / `$` table verified per vendor on 2026-11-25.
+- [x] `v1.2.0` tagged and pushed — annotated tag on `2e30e19`, CI run `45597837631` green.
 
 ## In progress
 
-- [ ] Cut the `v1.2.0` tag and release (needs approval; `v1.0.0` and `v1.1.0` stay immutable).
+- [ ] Nothing — the `v1.2.0` milestone is closed.
 
 ## Pending
 
+- [ ] Re-check the one-prompt installer on a second machine (project-only and global).
 - [ ] Minimal eval harness for skill behaviour (3–5 prompts, rubric-based, recorded output).
 - [ ] Decide `--all` monorepo support in `version.mjs`: implement it or keep the per-package guidance.
 - [ ] Re-verify agent paths against vendor docs before the next release.
+- [ ] Decide the Drishti section rename/move (separate repo, reference pack, or leave as is).
 
 ## Blocked
 

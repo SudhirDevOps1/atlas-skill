@@ -13,12 +13,12 @@ MIT licensed. No runtime, no server, no database, no users.
 
 ## Current state
 
-- Version: 1.2.0 (unreleased — branch `fix/p0-hardening`; `v1.1.0` is the last published tag).
-- Stage: hardening pass — P0/P1 fixes, docs truth pass, Node 22 floor, Windows CI.
+- Version: 1.2.0 (**released** — annotated tag `v1.2.0` on `2e30e19`).
+- Stage: released; `v1.0.0`, `v1.1.0`, `v1.2.0` are immutable.
 - Last verified tests: 51 passed, 1 skipped, 0 failed (52 total) — Node 26.13.0,
   Windows 11, 2026-11-25.
-- Last verified CI: run `45591502306` — success, 4/4 jobs on Node 22/24 × Ubuntu/Windows
-  (commit `3752be8`, 2026-11-25).
+- Last verified CI: run `45597837631` — success, 4/4 jobs on Node 22/24 × Ubuntu/Windows
+  (release commit `2e30e19`, 2026-11-25).
 
 ## Decisions
 
@@ -44,6 +44,8 @@ MIT licensed. No runtime, no server, no database, no users.
 | 2026-11-25 | Playwright MCP pinned to `0.0.86` and labelled local, not read-only | `@latest` is unpinned supply chain, and the server can click and type | floating `@latest`, "read-only" claim |
 | 2026-11-25 | Node floor `>=22`; CI on 22 + 24, Ubuntu + Windows | Node 18/20 are EOL in Nov 2026, and the skipped rollback test needs a Windows job | Node 18/20, Linux-only |
 | 2026-11-25 | Backup folder is self-ignoring (`.atlas-setup/.gitignore` = `*`) | backups can contain an existing config with credentials | telling users to remember a `.gitignore` line |
+| 2026-11-25 | Invocation syntax is documented as a host feature, not shipped as a command | the `/` menu is owned by the host; the same skill folder appears as `/<skill-name>` in Antigravity/Zed and as `@<skill-id>` in OpenCode | shipping a `commands/` folder that only one host reads |
+| 2026-11-25 | Fold the invocation docs into `1.2.0` instead of bumping to `1.2.1` | `1.2.0` had never been tagged, so no published version was amended | a new patch release for a docs-only change |
 
 ## Discoveries
 
@@ -77,6 +79,15 @@ MIT licensed. No runtime, no server, no database, no users.
   `added === 0`, not on "the serialized output differs".
 - `versionCode = major*10000 + minor*100 + patch` needs minor and patch bounded to 0–99,
   otherwise two different versions share a code.
+- Punctuation is not portable: `@` is context in Antigravity/OpenCode/Claude Code/Cursor,
+  `/` is commands, GitHub Copilot uses `#` (not `@`) for context, and the Codex desktop app
+  uses `$` to invoke a skill explicitly. Verified 2026-11-25.
+- Antigravity and Zed auto-convert an installed skill into `/<skill-name>`; Claude Code,
+  Cursor and Copilot list skills in the `/` menu. A repo cannot ship that command.
+- `/plan` in Antigravity, Claude Code, Cursor, Codex and Gemini CLI is the host's read-only
+  planning mode, not a skill and not ATLAS's PLAN step.
+- No `/atlas-project-architect` in the menu usually means the host never loaded the folder;
+  most hosts scan the skills directory only at session start.
 
 ## Failed approaches
 
@@ -88,6 +99,8 @@ MIT licensed. No runtime, no server, no database, no users.
   context and the phase references lose their on-demand loading.
 - Listing `--force-channel` and `--no-git` as "every script must support" while the
   bundled script implemented neither — the public flag table now has a `Bundled` column.
+- Claiming "the skill has no slash command" without reading the host docs. The folder ships
+  none, but Antigravity and Zed generate `/<skill-name>` themselves. Docs were corrected.
 
 ## Known issues
 

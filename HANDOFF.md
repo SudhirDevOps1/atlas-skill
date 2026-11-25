@@ -4,10 +4,15 @@ Current version: 1.2.0
 
 ## State
 
-v1.1.0 is the last published release; `1.2.0` is the unreleased hardening candidate on
-branch `fix/p0-hardening`. The repository is MIT licensed, installable in any agent that
-reads `SKILL.md`, and still managed by its own skill: one version SSOT, four tested CLIs,
-an agent-SSOT drift gate, CI with version and agent drift gates, and the memory set.
+`v1.2.0` is the current published release (tag `v1.2.0` → `2e30e19`, CI run `45597837631`
+green). The repository is MIT licensed, installable in any agent that reads `SKILL.md`,
+and still managed by its own skill: one version SSOT, four tested CLIs, an agent-SSOT drift
+gate, CI with version and agent drift gates, and the memory set. `v1.0.0` and `v1.1.0`
+remain immutable.
+
+The tag points at the release commit `2e30e19` (code + changelog). The memory docs at HEAD
+record the post-release state; that is why `HANDOFF.md` and `TASKS.md` mention the tag that
+`2e30e19` itself does not yet contain.
 
 ## Changed this session
 
@@ -100,6 +105,26 @@ match the code.
 - Docs — README, AGENTS, MEMORY, TASKS, ASSUMPTIONS, SECURITY, PROJECT-STATUS, TESTING,
   PROJECT-SETUP and the skill README corrected to the real counts, matrix and wording.
 
+### Session — 2026-11-25 (invocation docs and v1.2.0 release)
+
+- Live research against each vendor's own documentation (checked 2026-11-25) on how a
+  skill is invoked: `@` attaches context, `/` runs commands and skills, `#` is Copilot's
+  context prefix, `$` invokes a skill explicitly in the Codex desktop app.
+- `docs/AGENT-COMPATIBILITY.md` — new section "How you invoke it — `@`, `/`, `#`, `$`":
+  12-host table, a per-host "shortest reliable way to invoke ATLAS" table, the
+  `/plan`-is-not-ATLAS note, and per-vendor source links.
+- `README.md` — explicit invocation is `/atlas-project-architect` where the host turns a
+  skill into a slash command, `@atlas-project-architect` in OpenCode, plain language
+  everywhere; `/plan` clarification added.
+- `INSTALL.md` — verify step 4 now proves the `/<skill-name>` wiring; the old trigger step
+  became step 5.
+- Correction recorded: the earlier "the skill has no slash command" claim was wrong. The
+  folder ships no `commands/` directory, but Antigravity and Zed generate
+  `/<skill-name>` from an installed skill. Fixed in docs, not just in chat.
+- Release: `2e30e19` on `main`, annotated tag `v1.2.0`, CI run `45597837631` green.
+  Rebased onto the two Dependabot action bumps (`c1155bc`, `a1039f3`) before pushing; no
+  force-push was used.
+
 ## Verified
 
 ```text
@@ -139,6 +164,18 @@ Result:  success — 4/4 jobs: verify (ubuntu-latest, node 22/24) and
 Env:     GitHub Actions, 2026-11-25, commit 3752be8
 ```
 
+```text
+Command: gh run watch 45597837631 --exit-status
+Result:  success — release commit 2e30e19 (tag v1.2.0), 4/4 jobs green
+Env:     GitHub Actions, 2026-11-25
+```
+
+```text
+Command: git ls-remote --tags origin
+Result:  v1.2.0^{} → 2e30e1987a796699534bce36d77e187cf9b227e5
+Env:     2026-11-25
+```
+
 The `fix/p0-hardening` branch is pushed and `main` was fast-forwarded to the same commit.
 Both refs point at the same commit; no force-push was used.
 
@@ -148,19 +185,19 @@ Nothing known.
 
 ## Next 3 actions
 
-1. Decide the release: tag `v1.2.0` (minor — the Unreleased section carries Added features)
-   and publish, or keep `1.2.0` unreleased for longer. `v1.0.0`/`v1.1.0` stay immutable.
-2. Re-check the README one-prompt installer on a real second machine (project-only and
+1. Re-check the README one-prompt installer on a real second machine (project-only and
    global) and record the observed paths.
-3. Implement **P0 only** of `docs/DRISHTI-BROWSER-AI-PLAN.md` in the Drishti repo after
+2. Implement **P0 only** of `docs/DRISHTI-BROWSER-AI-PLAN.md` in the Drishti repo after
    separate approval: pin CI actions, add `typecheck` + `version:verify` gates, release
    preflight and checksum, real security contact. Read
    `references/12-browser-extension-mcp.md` first; remove nothing.
+3. Decide the Drishti section rename/move (currently still a separate product audit inside
+   this repository) — move to its own repo, keep as a reference pack, or leave as is.
 
 ## Do not change
 
 - `LICENSE` terms (MIT) without an explicit decision and a changelog entry.
-- The published tags and releases — `v1.0.0` and `v1.1.0` are immutable.
+- The published tags and releases — `v1.0.0`, `v1.1.0` and `v1.2.0` are immutable.
 - The installer's overwrite guard: no silent replacement without `--force`, and no path
   that resolves to its own source.
 - The `version.mjs` behaviour contract without updating tests and reference 07.

@@ -1,7 +1,7 @@
 # PROJECT-STATUS — atlas-skill
 
 Version: 1.2.0
-Stage: hardening release candidate (unreleased; `v1.1.0` is the last published tag)
+Stage: released (tag `v1.2.0` → `2e30e19`, CI run `45597837631` green)
 Updated: 2026-11-25
 
 ## What works
@@ -19,7 +19,7 @@ Updated: 2026-11-25
 | Worked examples | shipped | `examples/` |
 | Version + agent drift gates in CI | shipped | `.github/workflows/ci.yml` |
 | Memory set (AGENTS/MEMORY/HANDOFF/TASKS/ASSUMPTIONS) | shipped | repo root |
-| Releases | published | `v1.0.0`, `v1.1.0` |
+| Releases | published | `v1.0.0`, `v1.1.0`, `v1.2.0` |
 
 ## Not built (deliberate)
 
@@ -45,6 +45,7 @@ test runs on the Ubuntu jobs, and the installer and setup CLI get a smoke test o
 combination.
 
 Run `45591502306` (1.2.0 commit `3752be8`): **success** — 4/4 jobs, Node 22/24 × Ubuntu/Windows.
+Run `45597837631` (release commit `2e30e19`, tag `v1.2.0`): **success** — 4/4 jobs.
 Run `45378930334` (v1.0.0 commit): **success** — 15/15 on Node 20 and 22.
 Run `45382872606` (v1.1.0 commit): **success** — 23/23, 0 skipped on Node 20 and 22,
 installer smoke test included.
