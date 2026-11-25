@@ -226,7 +226,7 @@ DEADLINE:        now / this week / no deadline
 Template: `atlas-project-architect/assets/templates/PROJECT-INPUT.md`.
 
 Do not paste the reference files up front. The skill loads one phase at a time on
-purpose — pasting all eleven costs 10–15× more context and makes the agent worse, not
+purpose — pasting all thirteen costs 10–15× more context and makes the agent worse, not
 better.
 
 ### Strict approval mode

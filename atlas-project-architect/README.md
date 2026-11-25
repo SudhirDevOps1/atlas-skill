@@ -53,7 +53,7 @@ GOAL · USERS · PLATFORM · DATA · BUDGET · DEADLINE
 ```
 
 Do not paste the references up front. `SKILL.md` loads one phase at a time; pasting all
-eleven costs 10–15× more context and produces a worse result.
+thirteen costs 10–15× more context and produces a worse result.
 
 For a chat UI with no filesystem, paste `SKILL.md` as the first message. Use
 `ATLAS-MASTER-PROMPT.md` when you want the whole rulebook in one paste.

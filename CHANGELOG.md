@@ -42,6 +42,19 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   nested `mcp.servers` shape, read-only endpoints, idempotence, existing-config
   preservation, invalid-JSON/JSONC refusal, scoped selection, backup on `--force` and
   unsafe-target rejection.
+- `docs/DRISHTI-BROWSER-AI-PLAN.md` — read-only audit of the Drishti Browser AI extension
+  (repo, HEAD `ec1ac8c`, 2026-11-25): verified-vs-claimed evidence table, ten findings, and
+  a P0–P3 additive plan. No feature, tool, permission or screen is removed; all 37 MCP
+  tools stay and a snapshot test is proposed to freeze them.
+- `atlas-project-architect/references/12-browser-extension-mcp.md` — domain pack for MV3
+  extensions, local bridges and MCP servers: three-process shape, permission budget,
+  service-worker lifecycle, message envelope, page/prompt-injection boundary, bridge
+  handshake, tool naming/schema/error/approval contract, six-test regression set, release
+  rules and anti-patterns.
+- `README.md` — "One-prompt install: Drishti Browser AI" with a `<DRISHTI_ATLAS_INSTALL>`
+  prompt that clones the public repo, builds and proves every package, generates a
+  gitignored token, wires the MCP server, starts the bridge on demand, and leaves the two
+  browser steps to the human.
 
 ### Changed
 
@@ -60,6 +73,10 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   agent-SSOT drift gate and a project-setup smoke test.
 - `README.md` — tests badge updated to 43 and the one-project setup guide is linked from
   the install section.
+- `atlas-project-architect/SKILL.md` and `docs/SKILL-STACK.md` — the browser-extension/MCP
+  pack is wired into the phase playbook and the Tier B domain list.
+- `README.md`, `atlas-project-architect/README.md`, `AGENTS.md` — reference count corrected
+  to thirteen files (`00`–`12`), with the three packs named separately from the ten phases.
 
 ### Fixed
 

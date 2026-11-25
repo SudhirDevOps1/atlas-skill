@@ -33,12 +33,12 @@ There is no runtime, no server, no database and no users. The product is text pl
 ├── atlas-project-architect/
 │   ├── SKILL.md
 │   ├── README.md
-│   ├── references/00-10
+│   ├── references/00-12
 │   ├── assets/templates/
 │   └── scripts/version.mjs        <- SSOT tool
 ├── scripts/install-skill.mjs      <- installer
 ├── tests/version.test.mjs · install.test.mjs
-├── docs/AGENT-COMPATIBILITY.md · SKILL-STACK.md · PROJECT-STATUS.md · TESTING.md
+├── docs/AGENT-COMPATIBILITY.md · SKILL-STACK.md · PROJECT-SETUP.md · PROJECT-STATUS.md · TESTING.md · DRISHTI-BROWSER-AI-PLAN.md
 ├── examples/greenfield.md · brownfield-audit.md
 └── .github/workflows/ci.yml
 ```

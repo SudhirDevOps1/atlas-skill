@@ -79,7 +79,7 @@ approval.
 | Task + `ATLAS-MASTER-PROMPT.md` | The full rulebook in context — highest token cost |
 | Task + `UNIVERSAL-AGENT-PROMPT.md` | A strict approval-first engineer: roles, preservation rules, approval gate, final report |
 
-The skill loads one reference at a time on purpose. Pasting all eleven costs 10–15× more
+The skill loads one reference at a time on purpose. Pasting all thirteen costs 10–15× more
 context and makes the result worse, not better.
 
 ### Then just ask
@@ -175,6 +175,102 @@ Full coordinator loop, delegation packet and handoff contract:
 
 ---
 
+## One-prompt install: Drishti Browser AI
+
+[Drishti Browser AI](https://github.com/SudhirDevOps1/drishti-browser-ai) is a Chrome/Brave
+MV3 extension plus a local WebSocket bridge and an MCP server — the agent gets real browser
+hands. The prompt below is the whole install: clone from GitHub, build all packages, prove
+the build, generate a local token, wire the MCP server into the host, and hand back the two
+browser steps that genuinely need a human click.
+
+Give it to Antigravity, OpenCode, Claude Code, Cursor or Codex. Nothing is installed
+globally, no OS service is created, and the token never leaves the machine.
+
+```xml
+<DRISHTI_ATLAS_INSTALL>
+You are installing Drishti Browser AI (दृष्टि) on this machine: a Chrome/Brave MV3
+extension + local WebSocket bridge + MCP server. Work step by step. If a step fails twice,
+stop and report what you ran, what you saw, and the safest next option. Never guess a path.
+
+0. Preflight — report, do not install anything global:
+   - node --version (>= 18), pnpm --version (>= 9), git --version
+   - Chrome or Brave installed
+   - the clone target must be OUTSIDE the current ATLAS repo
+
+1. Clone the public repo (or use the latest Release ZIP from GitHub Releases):
+   git clone https://github.com/SudhirDevOps1/drishti-browser-ai.git <target>
+   cd <target>
+
+2. Build and prove it, in this order. Paste the real command and its real result for each:
+   pnpm install --frozen-lockfile
+   pnpm -r run build
+   pnpm test
+   pnpm typecheck
+   pnpm version:verify
+   Confirm apps/chrome-extension/dist/manifest.json exists before continuing.
+
+3. Generate a local auth token and keep it out of git:
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   Write it to <target>/.drishti-token (already gitignored). Print it once for me.
+   Verify with: git check-ignore -v .drishti-token
+
+4. Wire the MCP server into my agent host as mcpServers.drishti-browser-ai:
+   command: node
+   args: ["<absolute-path>/apps/mcp-server/dist/index.js"]
+   env:
+     BRIDGE_AUTH_TOKEN: <token from step 3>
+     BRIDGE_WS_URL: ws://127.0.0.1:7483
+   Show me the exact file you will edit and its full new content BEFORE writing it.
+
+5. Start the bridge on demand only:
+   BRIDGE_AUTH_TOKEN=<token> pnpm bridge:start
+   Do not create an OS service, a login item, or an auto-start script.
+
+6. Hand me the two steps you cannot do for me:
+   a) chrome://extensions -> enable Developer mode -> Load unpacked ->
+      select <target>/apps/chrome-extension/dist
+   b) Drishti Settings -> Connection & Bridge -> paste the token -> Save Changes ->
+      Run Ping -> expect ONLINE
+
+7. Report: every command with its real output, the token file path (never the token value
+   in a log), the MCP config path, and anything still NOT RUN.
+
+Hard rules:
+- Do not delete, rename or disable any existing Drishti feature, tool, permission or
+  screen. All 37 MCP tools stay.
+- Do not weaken or skip a test to make a step pass.
+- Do not commit the token, node_modules or dist.
+- Do not push, tag, publish or open a release without my explicit approval.
+- Never bind the bridge to 0.0.0.0; localhost only.
+</DRISHTI_ATLAS_INSTALL>
+```
+
+**What it deliberately leaves to you.** The agent cannot click “Load unpacked”, cannot grant
+a Chrome permission dialog, and cannot decide that a broad host permission is acceptable on
+your behalf. Those stay human steps.
+
+**Why this version is stricter than a plain install prompt.** It gates on `pnpm typecheck`
+and `pnpm version:verify`, verifies the token is actually gitignored, and forbids deleting a
+tool or weakening a test — the three ways an “auto-install” quietly produces a broken or
+unsafe setup.
+
+Then hand the agent the domain knowledge it needs:
+
+```text
+Use the atlas-project-architect skill.
+Read references/12-browser-extension-mcp.md before touching the manifest, the bridge
+handshake, or any MCP tool schema.
+Then follow docs/DRISHTI-BROWSER-AI-PLAN.md one phase at a time.
+No feature, tool or permission removed. No commit or push until I approve.
+```
+
+| Document | What it gives the agent |
+|---|---|
+| [`atlas-project-architect/references/12-browser-extension-mcp.md`](atlas-project-architect/references/12-browser-extension-mcp.md) | MV3 lifecycle, permission budget, message envelope, bridge auth, MCP tool/error contract, regression set, anti-patterns |
+| [`docs/DRISHTI-BROWSER-AI-PLAN.md`](docs/DRISHTI-BROWSER-AI-PLAN.md) | The audited findings and the P0–P3 additive plan, with guardrails and acceptance criteria |
+
+---
+
 ## The loop
 
 ```mermaid
@@ -198,7 +294,7 @@ Every claim of “done” carries a command and its real output. If it wasn’t 
 
 | Artifact | What it is | When to use it |
 |---|---|---|
-| **`atlas-project-architect/`** | The skill — `SKILL.md` + 11 phase references + 6 templates + the version tool | Installed into an agent; loads only the phase it needs |
+| **`atlas-project-architect/`** | The skill — `SKILL.md` + 13 references (10 phase files + skill matrix, agent team, browser/MCP pack) + 6 templates + the version tool | Installed into an agent; loads only the phase it needs |
 | **`ATLAS-MASTER-PROMPT.md`** | The full rulebook — 34 sections + appendix | One paste into a capable model when you want the complete contract |
 | **`UNIVERSAL-AGENT-PROMPT.md`** | The operating contract — 13 sections: roles, preservation, research, approval policy, final report | Paste when you want approval before every edit; pairs with or without the skill |
 | **`docs/SKILL-STACK.md`** | Which outside skill and MCP server to install per domain, per agent | Building the rest of the stack around ATLAS |
@@ -250,7 +346,7 @@ the bundled script — run it per package, or use `pnpm -r run version:sync`.
 ├── assets/banner.svg
 ├── atlas-project-architect/        the installable skill
 │   ├── SKILL.md                    trigger + core loop
-│   ├── references/                 00 → 10, one per phase
+│   ├── references/                 00 → 12: 10 phase files + 3 packs
 │   ├── assets/templates/           AGENTS · MEMORY · HANDOFF · TASKS · ASSUMPTIONS · PROJECT-INPUT
 │   └── scripts/version.mjs         SSOT tool
 ├── scripts/install-skill.mjs       installer for 20 agents

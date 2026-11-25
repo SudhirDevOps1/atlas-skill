@@ -151,6 +151,22 @@ Repository: `morluto/rea` (MIT, 476.3k stars). It is an MCP-backed skill — the
 without the REA MCP server is half a tool. Install both or neither. Scope it to artefacts
 the user owns or is authorised to inspect.
 
+### Browser extension and MCP
+
+This domain is mostly ATLAS's own knowledge, because the hard part is the contract, not the
+library API.
+
+| Source | Use it when |
+|---|---|
+| `atlas-project-architect/references/12-browser-extension-mcp.md` | Always, before touching a manifest, the bridge handshake, or a tool schema |
+| `webapp-testing` | You need a real browser to click through the extension surfaces |
+| `code-security` | The extension reads page content, holds a token, or injects scripts |
+| `llm-security` | Page text or tool output can reach a model — the prompt-injection boundary |
+
+MCP side: **Chrome DevTools** for DOM/console/network from a live profile, **Playwright** for
+repeatable E2E with `--load-extension`. Both are listed in the MCP table below. For a server
+you are writing, the pack's §7 is the contract; no external skill replaces it.
+
 ### Process and review
 
 | Skill | Use it when |
