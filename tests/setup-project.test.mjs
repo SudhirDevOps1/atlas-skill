@@ -54,7 +54,7 @@ function allFiles(dir) {
   });
 }
 
-test('--list prints the verified paths and read-only endpoints', () => {
+test('--list prints the verified paths and MCP endpoints', () => {
   const r = run(['--list']);
   assert.equal(r.code, 0);
   for (const text of [
@@ -83,7 +83,7 @@ test('default run is a dry-run and writes nothing', () => {
   assert.equal(allFiles(dir).length, 0);
 });
 
-test('--apply installs the skill once, 15 agents per host and read-only MCP configs', () => {
+test('--apply installs the skill once, 15 agents per host and four MCP configs', () => {
   const dir = project();
   const r = run(['--project', dir, '--apply']);
   assert.equal(r.code, 0, r.out);
@@ -103,7 +103,7 @@ test('--apply installs the skill once, 15 agents per host and read-only MCP conf
   assert.deepEqual(Object.keys(oc.mcp.servers).sort(), ['context7', 'github', 'playwright', 'supabase']);
   assert.equal(oc.mcp.servers.github.url, 'https://api.githubcopilot.com/mcp/readonly');
   assert.match(oc.mcp.servers.supabase.url, /read_only=true/);
-  assert.deepEqual(oc.mcp.servers.playwright.command, ['npx', '-y', '@playwright/mcp@latest']);
+  assert.deepEqual(oc.mcp.servers.playwright.command, ['npx', '-y', '@playwright/mcp@0.0.86']);
 
   const ag = readJSON(dir, '.agents', 'mcp_config.json');
   assert.deepEqual(Object.keys(ag.mcpServers).sort(), ['context7', 'github', 'playwright', 'supabase']);
@@ -198,6 +198,56 @@ test('--force replaces a local edit and keeps a backup', () => {
   assert.doesNotMatch(fs.readFileSync(agent, 'utf8'), /^local edit$/m);
   assert.ok(allFiles(path.join(dir, '.atlas-setup', 'backups')).some((f) =>
     fs.readFileSync(f, 'utf8') === 'local edit\n'));
+});
+
+test('accepts a UTF-8 BOM config and preserves the BOM', () => {
+  const dir = project();
+  const config = path.join(dir, 'opencode.json');
+  fs.writeFileSync(config, '\ufeff{ "model": "example/model" }\n', 'utf8');
+
+  const r = run(['--project', dir, '--apply', '--components', 'mcp', '--hosts', 'opencode']);
+  assert.equal(r.code, 0, r.out);
+
+  const buf = fs.readFileSync(config);
+  assert.deepEqual([...buf.subarray(0, 3)], [0xef, 0xbb, 0xbf], 'BOM must be preserved');
+  const data = JSON.parse(buf.toString('utf8').slice(1));
+  assert.equal(data.model, 'example/model');
+  assert.equal(data.mcp.servers.context7.type, 'remote');
+});
+
+test('does not rewrite or back up a config when every server already exists', () => {
+  const dir = project();
+  assert.equal(run(['--project', dir, '--apply', '--components', 'mcp', '--hosts', 'opencode']).code, 0);
+
+  const config = path.join(dir, 'opencode.json');
+  const custom = fs.readFileSync(config, 'utf8').replace(/\n  /g, '\n    ');
+  fs.writeFileSync(config, custom, 'utf8');
+
+  const r = run(['--project', dir, '--apply', '--components', 'mcp', '--hosts', 'opencode']);
+  assert.equal(r.code, 0, r.out);
+  assert.equal(fs.readFileSync(config, 'utf8'), custom, 'formatting must be left alone');
+  assert.equal(exists(dir, '.atlas-setup'), false, 'no backup is needed for a no-op');
+});
+
+test('keeps backups out of git', () => {
+  const dir = project();
+  assert.equal(run(['--project', dir, '--apply']).code, 0);
+  const agent = path.join(dir, '.opencode', 'agents', 'api-architect.md');
+  fs.writeFileSync(agent, 'local edit\n');
+
+  assert.equal(run(['--project', dir, '--apply', '--force']).code, 0);
+  assert.equal(fs.readFileSync(path.join(dir, '.atlas-setup', '.gitignore'), 'utf8'), '*\n');
+});
+
+test('refuses a file where a directory is required, before writing', () => {
+  const dir = project();
+  fs.writeFileSync(path.join(dir, '.opencode'), 'not a directory');
+
+  const r = run(['--project', dir, '--apply']);
+  assert.equal(r.code, 1);
+  assert.match(r.out, /not a directory/);
+  assert.equal(exists(dir, '.agents'), false);
+  assert.equal(exists(dir, 'opencode.json'), false);
 });
 
 test('bad usage and unsafe targets are rejected', () => {

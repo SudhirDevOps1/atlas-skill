@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 /**
- * ATLAS project setup — zero dependencies, Node 18+.
+ * ATLAS project setup — zero dependencies, Node 22+.
  *
- * Installs the ATLAS skill, the 15-role sub-agent team and a READ-ONLY MCP
+ * Installs the ATLAS skill, the 15-role sub-agent team and a read-first MCP
  * config into ONE target project. It never touches global config, never writes
- * a secret, and never silently replaces an existing file or MCP server.
+ * a new secret, and never silently replaces an existing file or MCP server.
+ *
+ * Three servers are read-only by construction (context7, GitHub /readonly,
+ * Supabase read_only=true). Playwright is NOT read-only: it is a local browser
+ * automation process that can click, type and navigate. It is pinned to an
+ * exact version and runs only in a stdio process owned by the host.
  *
  * Usage:
  *   node scripts/setup-project.mjs --project <dir>                 # preview only
@@ -76,7 +81,7 @@ const COMPONENTS = ['skill', 'agents', 'mcp'];
 const MCP = {
   opencode: {
     context7: { type: 'remote', url: 'https://mcp.context7.com/mcp' },
-    playwright: { type: 'local', command: ['npx', '-y', '@playwright/mcp@latest'] },
+    playwright: { type: 'local', command: ['npx', '-y', '@playwright/mcp@0.0.86'] },
     github: { type: 'remote', url: 'https://api.githubcopilot.com/mcp/readonly' },
     supabase: {
       type: 'remote',
@@ -85,7 +90,7 @@ const MCP = {
   },
   antigravity: {
     context7: { serverUrl: 'https://mcp.context7.com/mcp' },
-    playwright: { command: 'npx', args: ['-y', '@playwright/mcp@latest'] },
+    playwright: { command: 'npx', args: ['-y', '@playwright/mcp@0.0.86'] },
     github: { serverUrl: 'https://api.githubcopilot.com/mcp/readonly' },
     supabase: {
       serverUrl: 'https://mcp.supabase.com/mcp?read_only=true&features=database,docs'
@@ -133,7 +138,7 @@ function parseArgs(argv) {
 
 function usage(code) {
   const text = [
-    'ATLAS project setup — skill + 15 agents + read-only MCP config',
+    'ATLAS project setup — skill + 15 agents + MCP config',
     '',
     '  node scripts/setup-project.mjs --project <dir>                  # preview',
     '  node scripts/setup-project.mjs --project <dir> --apply          # write',
@@ -155,7 +160,7 @@ function printList() {
   for (const [id, h] of Object.entries(HOSTS)) {
     console.log(`  ${id.padEnd(12)} skill=${h.skills}/${SKILL_NAME}  agents=${h.agents}/<id>.md  mcp=${h.config}`);
   }
-  console.log('\nREAD-ONLY MCP ENDPOINTS');
+  console.log('\nMCP ENDPOINTS (context7 + GitHub + Supabase are read-only; Playwright is local browser automation)');
   for (const [name, def] of Object.entries(MCP.opencode)) {
     const target = def.url || def.command.join(' ');
     console.log(`  ${name.padEnd(11)} ${target}`);
@@ -197,19 +202,26 @@ function assertSource() {
   }
 }
 
+/** Read a config file and remember whether it started with a UTF-8 BOM. */
+function readConfigText(configPath) {
+  const buf = fs.readFileSync(configPath);
+  const bom = buf.length >= 3 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf;
+  return { text: bom ? buf.toString('utf8').slice(1) : buf.toString('utf8'), bom };
+}
+
 function loadConfig(configPath, label) {
-  if (!fs.existsSync(configPath)) return {};
-  const raw = fs.readFileSync(configPath, 'utf8');
+  if (!fs.existsSync(configPath)) return { data: {}, bom: false };
+  const { text, bom } = readConfigText(configPath);
   let data;
   try {
-    data = raw.trim() ? JSON.parse(raw) : {};
+    data = text.trim() ? JSON.parse(text) : {};
   } catch (error) {
     throw new Fail(1, `${label} is not valid strict JSON; merge refused: ${error.message}`);
   }
   if (data === null || typeof data !== 'object' || Array.isArray(data)) {
     throw new Fail(1, `${label} root must be a JSON object; merge refused`);
   }
-  return data;
+  return { data, bom };
 }
 
 /** Supports nested keys such as OpenCode's `mcp.servers`. */
@@ -238,16 +250,43 @@ function assertContainer(data, rootKey, label) {
   }
 }
 
-/** Validate targets before printing a plan, so a dry-run catches the same errors. */
+/** Every existing segment of `target` below `project` must be a directory. */
+function assertDirectoryPath(project, target, label) {
+  const rel = path.relative(project, target);
+  let current = project;
+  for (const part of rel.split(path.sep)) {
+    current = path.join(current, part);
+    if (!fs.existsSync(current)) return; // the rest can be created
+    if (!fs.statSync(current).isDirectory()) {
+      throw new Fail(
+        1,
+        `${label}: ${path.relative(project, current)} exists but is not a directory`,
+      );
+    }
+  }
+}
+
+/** Validate every target before printing a plan, so a dry-run catches the same errors. */
 function preflight(hosts, components, project) {
-  if (!components.includes('mcp')) return;
   for (const hostId of hosts) {
     const host = HOSTS[hostId];
-    const configPath = path.join(project, host.config);
-    if (hostId === 'opencode' && !fs.existsSync(configPath) && fs.existsSync(path.join(project, host.jsonc))) {
-      throw new Fail(1, `${host.jsonc} exists. JSONC comments cannot be merged safely; convert it to ${host.config} first.`);
+
+    if (components.includes('skill')) {
+      assertDirectoryPath(project, path.join(project, host.skills), host.skills);
+      assertDirectoryPath(project, path.join(project, host.skills, SKILL_NAME), `${host.skills}/${SKILL_NAME}`);
     }
-    assertContainer(loadConfig(configPath, host.config), host.rootKey, host.config);
+    if (components.includes('agents')) {
+      assertDirectoryPath(project, path.join(project, host.agents), host.agents);
+    }
+    if (components.includes('mcp')) {
+      const configPath = path.join(project, host.config);
+      assertDirectoryPath(project, path.dirname(configPath), path.dirname(host.config));
+      if (hostId === 'opencode' && !fs.existsSync(configPath) && fs.existsSync(path.join(project, host.jsonc))) {
+        throw new Fail(1, `${host.jsonc} exists. JSONC comments cannot be merged safely; convert it to ${host.config} first.`);
+      }
+      const { data } = loadConfig(configPath, host.config);
+      assertContainer(data, host.rootKey, host.config);
+    }
   }
 }
 
@@ -255,7 +294,16 @@ function stamp() {
   return new Date().toISOString().replace(/[:.]/g, '-');
 }
 
+/** A backup can contain an existing config with credentials, so keep it out of git. */
+function ensureBackupIgnored(project) {
+  const dir = path.join(project, '.atlas-setup');
+  const file = path.join(dir, '.gitignore');
+  fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(file)) fs.writeFileSync(file, '*\n', 'utf8');
+}
+
 function makeBackup(target, backups, project, rel) {
+  ensureBackupIgnored(project);
   const dest = path.join(backups, rel);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.cpSync(target, dest, { recursive: true });
@@ -264,7 +312,7 @@ function makeBackup(target, backups, project, rel) {
 
 function mergeConfig(configPath, additions, rootKey, backups, project, rel, label) {
   const existed = fs.existsSync(configPath);
-  const data = loadConfig(configPath, label);
+  const { data, bom } = loadConfig(configPath, label);
   assertContainer(data, rootKey, label);
   if (!existed && rootKey === 'mcp.servers') data.$schema = OPENCODE_SCHEMA;
   if (!getContainer(data, rootKey)) setContainer(data, rootKey, {});
@@ -282,13 +330,19 @@ function mergeConfig(configPath, additions, rootKey, backups, project, rel, labe
     added++;
   }
 
+  // Nothing to add: do not reformat the user's file or create a pointless backup.
+  if (existed && added === 0) {
+    return { added, kept, backedUp: null, unchanged: true };
+  }
+
   const text = JSON.stringify(data, null, 2) + '\n';
-  if (existed && fs.readFileSync(configPath, 'utf8') === text) {
+  const encoded = (bom ? '\ufeff' : '') + text;
+  if (existed && fs.readFileSync(configPath, 'utf8') === encoded) {
     return { added, kept, backedUp: null, unchanged: true };
   }
   const backedUp = existed ? makeBackup(configPath, backups, project, rel) : null;
   fs.mkdirSync(path.dirname(configPath), { recursive: true });
-  fs.writeFileSync(configPath, text, 'utf8');
+  fs.writeFileSync(configPath, encoded, 'utf8');
   return { added, kept, backedUp, unchanged: false };
 }
 
@@ -411,9 +465,22 @@ function main() {
     }
   }
 
-  for (const action of actions) {
-    console.log(`  [${action.host}] ${action.item}`);
-    if (!dry) console.log(`      ${action.apply()}`);
+  let applied = 0;
+  try {
+    for (const action of actions) {
+      console.log(`  [${action.host}] ${action.item}`);
+      if (!dry) {
+        console.log(`      ${action.apply()}`);
+        applied++;
+      }
+    }
+  } catch (e) {
+    if (e instanceof Fail) throw e;
+    throw new Fail(
+      1,
+      `Setup failed after ${applied} action(s): ${e.message}. ` +
+        'Re-run with --apply to resume; replacements are backed up under .atlas-setup/backups.',
+    );
   }
 
   if (dry) {

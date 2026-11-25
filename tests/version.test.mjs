@@ -231,6 +231,34 @@ test('preserves a UTF-8 BOM in the SSOT', () => {
   assert.match(buf.toString('utf8'), /"version": "0\.1\.1"/);
 });
 
+test('reads and writes the top-level version, not scripts.version', () => {
+  const dir = fixture({
+    'package.json':
+      '{\n  "name": "x",\n  "scripts": { "version": "echo 1.2.3" },\n  "version": "0.1.0"\n}\n',
+  });
+
+  const shown = run(dir, 'show', '--json');
+  assert.equal(shown.code, 0, shown.out);
+  assert.equal(JSON.parse(shown.out).version, '0.1.0');
+
+  assert.equal(run(dir, 'set', '0.2.0').code, 0);
+  const pkg = JSON.parse(read(dir, 'package.json'));
+  assert.equal(pkg.version, '0.2.0');
+  assert.equal(pkg.scripts.version, 'echo 1.2.3');
+});
+
+test('rejects unknown flags with usage exit 2', () => {
+  const dir = fixture(BASE);
+  assert.equal(run(dir, 'verify', '--bogus').code, 2);
+  assert.equal(run(dir, 'bump', 'patch', '--nope').code, 2);
+});
+
+test('rejects minor and patch above 99 to keep versionCode unique', () => {
+  const dir = fixture(BASE);
+  assert.equal(run(dir, 'set', '1.100.0').code, 1);
+  assert.equal(run(dir, 'set', '1.0.100').code, 1);
+});
+
 test('rolls back every written file when a later write fails', {
   skip:
     process.platform === 'win32'
