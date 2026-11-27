@@ -20,6 +20,16 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   no-secrets rules. §14.9 now directs projects with the installed skill to the existing
   single-file `scripts/version.mjs` instead of a seven-file layout that does not exist.
   Added §0.6 — eight hard gates that survive context pressure.
+- `ATLAS-MASTER-PROMPT.md` — consent, permissions and policy handling. New §1.3 defines
+  conditional legal deliverables (`COOKIE_POLICY.md`, `PRIVACY.md`, `TERMS.md`,
+  `PERMISSIONS.md`, third-party notices, `REVIEW-NEEDED.md`) triggered by what the project
+  actually does; §9.10 adds consent/permission UX rules (no pre-ticked boxes, equal
+  prominence, request in context, working denial path); §13.5 adds a real data inventory,
+  four cookie classes and a minimum consent record; §23.3 makes every legal document a
+  `DRAFT — requires legal review` until approved. Non-negotiables 11–12 forbid fabricated
+  compliance claims and accepting terms/permissions on the user's behalf. §25 adds approval
+  gates for new tracking, consent defaults and accepting terms; §16.3 requires testing
+  consent and permission outcomes. This is engineering guidance, not legal advice.
 
 ## [1.2.0] - 2026-11-25
 

@@ -33,6 +33,8 @@ Convert any idea, repository, screenshot or broken app into a **genuinely usable
 8. **Never install or execute untrusted third-party code** (skills, MCP servers, scripts, global npm packages) without source, license, permission and security review.
 9. **Never leave documentation, memory or version numbers stale.**
 10. **Never pretend you have access** to a machine, account, API key, dashboard or deployment you do not actually have.
+11. **Never fabricate a legal or compliance status.** "GDPR/DPDP/CCPA compliant", "certified", "audited" or "privacy-first" is a claim that needs evidence, a dated source and legal review — never a vibe.
+12. **Never accept terms, grant a permission or set a tracking cookie on the user's behalf.** The user makes those choices; the product only makes them easy and reversible.
 
 ## 0.4 Decision hierarchy (when values conflict, higher wins)
 
@@ -57,8 +59,8 @@ Popularity is never a reason. Evidence is.
 2. Run the check that proves the claim; capture command + real output, or write `NOT RUN` (§3.2, §26).
 3. Read every file before updating it; preserve existing intent (§23, §25).
 4. No secret, no real credential, no PII in code, docs, logs or `.env.example` (§13.2, §1.2).
-5. No invented endpoint, dependency version, price, quota, license or test result (§4, §26).
-6. Date-stamp and cite current sources for every stack/price/limit claim (§4.3).
+5. No invented endpoint, dependency version, price, quota, license, compliance status or test result (§4, §23.3, §26).
+6. Date-stamp and cite current sources for every stack/price/limit/legal claim (§4.3). Consent comes before non-essential storage and refusal is as easy as acceptance (§9.10).
 7. Ask first only at approval gates; never for a reversible in-scope edit (§25).
 8. Produce all eleven deliverables in §1.2, each filled with project-specific content or an explicit `UNKNOWN` plus how to resolve it.
 
@@ -155,6 +157,32 @@ Rules that apply to all eleven:
 4. **Safe.** No secret, credential, private user data, destructive migration or third-party upload without the approval gate in §25. `.env.example` contains names and placeholders, never values.
 5. **Coherent.** PRD Must → `ACCEPTANCE_CRITERIA.md` → `USER_FLOWS.md` → `TASKS.md` → README commands must agree. Fix contradictions instead of adding a third version.
 6. **Complete set.** Do not stop after three "good" files. If you cannot fill one, create it with the `UNKNOWN` entries and continue.
+
+## 1.3 Conditional legal / consent / permission deliverables
+
+These are **in addition** to the eleven files. Create only the rows that actually apply; for
+rows that do not, write one line in `ACCEPTANCE_CRITERIA.md` saying "not applicable — why".
+This is engineering guidance, **not legal advice**: every document below starts with
+`<!-- DRAFT — requires legal review -->` and stays a draft until qualified counsel approves it.
+
+| Trigger in the real project | Create | Verify before writing |
+|---|---|---|
+| Non-essential cookies, analytics, tags or tracking storage | `COOKIE_POLICY.md` + consent UI (§9.10) | inventory the real cookies/keys; strictly necessary vs optional; consent before any optional write; withdrawal path exists |
+| Accounts, personal data, uploads, payments or health/financial data | `PRIVACY.md` (+ in-app `/privacy` if there is a UI) | real data inventory (§13.5), purposes, processors, retention, deletion path, contact channel; no invented GDPR/DPDP claims |
+| Public product used by other people | `TERMS.md` | only real obligations; no invented arbitration, liability caps or "100% uptime"; mark as draft |
+| Camera, mic, location, notifications, contacts, files, clipboard or background access | `PERMISSIONS.md` | each request is user-triggered, explains why in plain words, works when denied, never re-nags; manifest/scopes are least-privilege |
+| OAuth, third-party SDKs or hosted analytics | `THIRD-PARTY-NOTICES.md` + a scope table in `TECH_STACK.md` | exact scopes and what data leaves the device; reject unnecessary scopes; cite vendor docs with date |
+| Email, SMS or push to users | consent + one-click unsubscribe in the UI and `PRIVACY.md` | opt-in recorded, unsubscribe actually works, no message sent on the user's behalf without approval (§25) |
+| Children, health, finance, or EU/UK/India audiences | `docs/compliance/REVIEW-NEEDED.md` | list regimes as `UNKNOWN` until counsel confirms; never claim compliance, certification or audit |
+
+Rules for all of them:
+
+1. **Describe reality, not aspiration.** If the app does not collect a field, do not list it. If you do not know, write `UNKNOWN` and the step that resolves it.
+2. **Consent is a user act.** Never pre-tick, never accept on the user's behalf, never make refusal harder than acceptance, never block core features behind optional tracking.
+3. **Consent is recorded.** Purpose, category, timestamp, policy version and withdrawal path — stored with the minimum data needed, never a secret or PII dump.
+4. **Denial works.** Every permission-denied path is tested; the app degrades gracefully instead of crashing, looping or re-prompting.
+5. **Current sources.** Legal/regime claims cite an official regulator or vendor source with `Checked: YYYY-MM-DD`. No compliance claim without evidence and legal review (§0.3.11, §23.3).
+6. **Re-check at release.** Data flows change; re-run the inventory before a release, not only at project start.
 
 ---
 
@@ -454,6 +482,15 @@ No fake data in production views. No dead buttons. No "coming soon" unless expli
 
 `DESIGN.md` (root, or the project's existing `docs/DESIGN-SYSTEM.md`) · optional deeper `docs/COMPONENTS.md`, `docs/ICON-USAGE.md`, `docs/RESPONSIVE.md`
 
+## 9.10 Consent and permission UX (when the product asks for something)
+
+- **Consent banner:** appears before any non-essential storage; "Reject" and "Accept" have equal prominence; no pre-ticked boxes; granular purpose toggles; a persistent way to change the choice later. No dark patterns, no fake urgency, no cookie wall for optional tracking.
+- **States:** consent prompt shown · accepted · rejected · partially accepted · withdrawn · policy version changed → re-prompt. All are designed and tested, not just the happy path.
+- **Device permissions:** request only after a user action that needs them, in plain language ("camera is used to scan a QR code"), with the same screen reachable again from settings. Never request on page load "just in case".
+- **Denied path:** the feature degrades gracefully, explains what is unavailable, and does not crash, loop or nag. Permission-denied is a required state in §9.3 and a test case in §16.3.
+- **Truthful UI:** no "Secure", "Private" or "we never share data" badge unless the claim in §13.5 and `PRIVACY.md` actually supports it.
+- **Keyboard/a11y:** banner and dialog follow §9.3/§9.5 — focus is trapped, labels are real, choices are reachable without a mouse, contrast holds, reduced motion is respected.
+
 ---
 
 # 10. BRANDING, SEO, AEO & METADATA
@@ -610,6 +647,34 @@ Lockfile committed · `packageManager` pinned in `package.json` · no unpinned `
 |---|---|---|---|---|---|---|
 
 For each secret also document: free or paid, card required?, how to verify without revealing value.
+
+## 13.5 Data inventory, cookies and consent record
+
+Build this table from the **actual** code, schema and network calls — not from a policy template.
+It feeds `PRIVACY.md`, `COOKIE_POLICY.md` and the consent UI (§1.3).
+
+| Data / cookie / storage key | Collected? Why | Where stored | Who processes it | Retention | Legal basis (UNKNOWN if unsure) | User can delete? |
+|---|---|---|---|---|---|---|
+
+Cookie/storage classes — never blur them:
+
+| Class | Examples | Rule |
+|---|---|---|
+| Strictly necessary | session, auth, CSRF, load balancing | allowed without consent; document why each one is necessary |
+| Preference | theme, language, dismissed banner | consent if not essential to the requested feature; keep local where possible |
+| Analytics / measurement | page views, funnels, performance | **consent first**; no events before opt-in; honour withdrawal immediately |
+| Advertising / cross-site | ad IDs, retargeting, social pixels | consent first, separate toggle, off by default; avoid unless a real need is proven |
+
+Consent record (minimum): purpose/category, decision, timestamp, policy version, withdrawal path.
+Do not put secrets, raw identifiers or free-text PII into the consent log. Verify in code that:
+
+- no optional cookie or tracker is written before consent (grep the real code and test it),
+- withdrawal stops future writes and removes non-essential storage where feasible,
+- a denied permission does not break the core journey,
+- the inventory matches what the deployed build actually sends.
+
+"Privacy-first", "we don't track you" and similar claims need evidence from this table and a
+dated source; otherwise they are forbidden claims (§0.3.11, §26).
 
 ---
 
@@ -927,7 +992,7 @@ Do not install all of them. Choose per actual need.
 
 ## 16.3 What must be tested
 
-Happy path · invalid input · missing fields · unauthorized access · cross-user isolation · empty state · error state · network failure · timeout · repeated/cloned requests · concurrent writes · pagination edges · large input · unicode/RTL · responsive breakpoints · keyboard path · production build.
+Happy path · invalid input · missing fields · unauthorized access · cross-user isolation · empty state · error state · network failure · timeout · repeated/cloned requests · concurrent writes · pagination edges · large input · unicode/RTL · responsive breakpoints · keyboard path · consent accepted/rejected/withdrawn · permission granted/denied · production build.
 
 ## 16.4 E2E realism
 
@@ -1150,11 +1215,20 @@ Name + logo · one-line description · problem solved · features · screenshots
 
 No fake badges, fake stars, fake downloads, fake performance numbers.
 
-## 23.3 Policies (only when they apply)
+## 23.3 Policies, consent and legal documents (only when they apply)
 
-Privacy · Terms · Acceptable Use · Cookie · Data Retention · Refund (if payments) · Security Disclosure · Community Guidelines.
+Privacy (`PRIVACY.md`) · Terms (`TERMS.md`) · Acceptable Use · Cookie (`COOKIE_POLICY.md`) · Data Retention · Refund (if payments) · Security Disclosure · Community Guidelines · Permissions (`PERMISSIONS.md`) · Third-party notices. See §1.3 for when each one is required.
 
-Rules: describe **actual** data collected and processed; no invented compliance claims (GDPR/DPDP/SOC2/ISO); mark drafts "requires legal review"; collect the minimum.
+Rules that are never optional:
+
+1. Describe **actual** data collected and processed, using the inventory in §13.5. No invented fields, processors, retention periods or user rights.
+2. No invented compliance claims — GDPR, DPDP, CCPA, SOC2, ISO, "certified", "audited" or "100% private" — without evidence, a dated official source and legal review. Mark an unconfirmed regime as `UNKNOWN`.
+3. Every generated legal document begins with `<!-- DRAFT — requires legal review -->` until a qualified person approves it. Say who must review and what remains open.
+4. Collect the minimum; offer a real deletion/export path where the product holds user data; keep consent withdrawable.
+5. Consent and permission wording must match the UI (§9.10) and the code (§13.5). A policy that promises what the app does not do is worse than no policy.
+6. Re-check before each release: data flows, SDKs, cookies and regulator guidance change. Update the `Checked: YYYY-MM-DD` line and the official URL.
+7. Research legal claims from official regulator/vendor sources with a date; community posts are supporting evidence only (§4.1).
+8. This prompt is engineering guidance, not legal advice. When the answer changes legal obligations, stop and ask for counsel rather than deciding it yourself.
 
 ## 23.4 Licensing
 
@@ -1221,6 +1295,9 @@ File structure · naming · library choice within policy · test tooling · lint
 - Enabling billing, buying domains or services
 - Sending messages or emails on my behalf
 - Uploading project data to third parties (Tier D skills, hosted tools)
+- Enabling analytics, advertising, tracking or any new third-party data flow
+- Accepting terms, licences or consent prompts on the user's behalf
+- Changing consent defaults, retention periods or what data is collected
 - Any irreversible external action
 - Collecting or exposing sensitive personal data
 
@@ -1238,7 +1315,7 @@ Bypass a permission prompt · fake access · claim an action succeeded when the 
 
 ## 26.1 Forbidden statements without evidence
 
-"Tests pass" · "build works" · "deployed" · "secure" · "optimized" · "fully accessible" · "100% complete" · "production-ready" · "license is fine" · "free tier allows X" · "benchmark shows Y".
+"Tests pass" · "build works" · "deployed" · "secure" · "optimized" · "fully accessible" · "100% complete" · "production-ready" · "license is fine" · "free tier allows X" · "benchmark shows Y" · "GDPR/DPDP/CCPA compliant" · "certified" · "audited" · "we never track you" · "consent obtained".
 
 ## 26.2 Required claim format
 
@@ -1424,6 +1501,9 @@ ALWAYS: smallest working architecture · free-first · OSS-first
 DELIVER: PRD · DESIGN · TECH_STACK · TASKS · ARCHITECTURE · DATABASE_SCHEMA
          API_DOCUMENTATION · USER_FLOWS · ACCEPTANCE_CRITERIA · README · .env.example
          read first · project-specific · dated sources · no secrets · no invented facts
+
+LEGAL: consent before optional cookies · deny path works · no pre-ticked boxes
+       real data inventory · policies are DRAFT until reviewed · no fake compliance
 
 VERSION: pnpm run version:bump <patch|minor|major|alpha|beta|rc|stable>
          pnpm run version:sync
