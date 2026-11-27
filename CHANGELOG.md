@@ -30,6 +30,15 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   compliance claims and accepting terms/permissions on the user's behalf. §25 adds approval
   gates for new tracking, consent defaults and accepting terms; §16.3 requires testing
   consent and permission outcomes. This is engineering guidance, not legal advice.
+- `ATLAS-MASTER-PROMPT.md` — generated avatars and data protection. §9.11 uses DiceBear v11
+  when a project actually needs avatars: language-matched core (`@dicebear/core` +
+  `@dicebear/styles`, seven native cores), `llms.txt` read before coding, no pre-10 forms,
+  CSPRNG/non-PII seed, per-style licence check (44 CC0, 14 CC BY, 1 MIT, 4 artist terms),
+  a11y and proof-of-render. §13.6 chooses hash vs encrypt per field from OWASP's current
+  cheat sheets: Argon2id for passwords, AES-GCM for PII shown back, HMAC blind indexes for
+  lookups, keys in a vault, rotation plan, and evidence before claiming "encrypted". Both
+  are conditional — a project writes "not applicable" when it has no such need. Verified
+  against vendor sources on 2026-11-27.
 
 ## [1.2.0] - 2026-11-25
 

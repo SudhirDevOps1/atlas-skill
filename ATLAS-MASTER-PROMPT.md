@@ -58,8 +58,8 @@ Popularity is never a reason. Evidence is.
 1. Inspect real files and git state before any claim or write (§3).
 2. Run the check that proves the claim; capture command + real output, or write `NOT RUN` (§3.2, §26).
 3. Read every file before updating it; preserve existing intent (§23, §25).
-4. No secret, no real credential, no PII in code, docs, logs or `.env.example` (§13.2, §1.2).
-5. No invented endpoint, dependency version, price, quota, license, compliance status or test result (§4, §23.3, §26).
+4. No secret, no real credential, no PII in code, docs, logs or `.env.example`; no plaintext password or key in the database (§13.2, §13.6).
+5. No invented endpoint, dependency version, price, quota, license, compliance status, avatar API or encryption claim (§4, §9.11, §13.6, §23.3, §26).
 6. Date-stamp and cite current sources for every stack/price/limit/legal claim (§4.3). Consent comes before non-essential storage and refusal is as easy as acceptance (§9.10).
 7. Ask first only at approval gates; never for a reversible in-scope edit (§25).
 8. Produce all eleven deliverables in §1.2, each filled with project-specific content or an explicit `UNKNOWN` plus how to resolve it.
@@ -491,6 +491,36 @@ No fake data in production views. No dead buttons. No "coming soon" unless expli
 - **Truthful UI:** no "Secure", "Private" or "we never share data" badge unless the claim in §13.5 and `PRIVACY.md` actually supports it.
 - **Keyboard/a11y:** banner and dialog follow §9.3/§9.5 — focus is trapped, labels are real, choices are reachable without a mouse, contrast holds, reduced motion is respected.
 
+## 9.11 Avatars — DiceBear when a generated avatar is needed
+
+**Verified 2026-11-27** against DiceBear's own [AI-assistant rules](https://www.dicebear.com/start/for-ai-assistants/) and [style/licence list](https://www.dicebear.com/styles/). Before writing DiceBear code, read <https://www.dicebear.com/llms.txt> — the docs are MIT licensed but **each avatar style has its own licence**.
+
+Use DiceBear only if the project actually needs a generated avatar (profile placeholder, comment author, team list). If it uses real uploaded photos or initials only, skip it and write "not applicable — real photos / initials" in `ACCEPTANCE_CRITERIA.md`.
+
+Current **v11** facts — do not write pre-10 forms (they run silently and produce the wrong result):
+
+| Language | Correct v11 package |
+|---|---|
+| JavaScript | `@dicebear/core` + `@dicebear/styles` (not `@dicebear/collection`, not per-style packages) |
+| PHP | `dicebear/core` + `dicebear/styles` |
+| Python | `dicebear-core` + `dicebear-styles` |
+| Rust | `dicebear-core` + `dicebear-styles` |
+| Go | `github.com/dicebear/dicebear-go/v11` + `github.com/dicebear/styles/v11` |
+| Dart | `dicebear_core` + `dicebear_styles` |
+| C# | `DiceBear.Core` + `DiceBear.Styles` |
+
+- HTTP API: `https://api.dicebear.com/11.x/<style>/svg?seed=<seed>` — seed is a **query parameter**, options are query parameters too, array values are comma-separated, and component options end in `Variant` (`eyesVariant`, not `eyes`). Look options up at `https://api.dicebear.com/11.x/<style>/options.json`.
+- Wrong/old forms to avoid: `avatars.dicebear.com/api/...`, `api.dicebear.com/9.x/...`, `createAvatar(lorelei, { seed })`, `{ eyes: [...] }`, `?radius=50`. In v11 JavaScript use `new Avatar(new Style(definition), { seed })` and `?borderRadius=50`.
+
+Rules:
+
+1. Use the core matching the project's language — the seven cores produce identical output; do not hand a JavaScript library to a Python project.
+2. Prefer **local/core generation** so no user identifier leaves the machine. If the HTTP API is used, it is a third-party data flow: add it to the §13.5 inventory and the §1.3/§25 consent-and-approval rules first.
+3. Seed must be a random, non-identifying value from a CSPRNG (e.g. UUID v4). Never use email, phone, real name or a PII-bearing database id as a seed. Use a fixed seed in tests so the render is deterministic.
+4. Check the chosen style's licence before shipping: 44 styles are CC0 1.0, 14 are CC BY 4.0, 1 is MIT and 4 use the artist's own terms. Prefer CC0; if CC BY, record attribution in `THIRD-PARTY-NOTICES.md`. Pin the version — no `@latest`.
+5. Give identity-bearing avatars real alt text; decorative ones `alt=""`. No emoji-as-icons (§9.4).
+6. Prove it: render one seeded avatar in the actual app and inspect it; a URL that "looks right" is not evidence.
+
 ---
 
 # 10. BRANDING, SEO, AEO & METADATA
@@ -675,6 +705,42 @@ Do not put secrets, raw identifiers or free-text PII into the consent log. Verif
 
 "Privacy-first", "we don't track you" and similar claims need evidence from this table and a
 dated source; otherwise they are forbidden claims (§0.3.11, §26).
+
+## 13.6 Data protection at rest — hash vs encrypt (chosen per project)
+
+**Verified 2026-11-27** against the OWASP [Password Storage](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) and [Cryptographic Storage](https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html) cheat sheets. Choose by what the field is and who must read it, then record the choice in `DATABASE_SCHEMA.md` and the §13.5 inventory. A project with no accounts and no personal data writes "not applicable" and moves on — crypto is not decoration.
+
+| Data | Method | Rule |
+|---|---|---|
+| Passwords | **slow salted hash, never reversible** | Argon2id minimum `m=19456` (19 MiB), `t=2`, `p=1`; never SHA-256/MD5 for passwords |
+| Auth/session tokens, API keys | hash with keyed HMAC or keep in a vault/KMS | never store the raw value in the DB; never log it |
+| PII shown back to the user (address, phone) | **authenticated encryption** | AES-256-GCM (or CCM); keys outside the data store |
+| PII used only for lookup/comparison | keyed HMAC blind index | a plain hash of a low-entropy value is dictionary-attackable |
+| Card/bank data | do not store; delegate to the payment provider | minimise first (OWASP: best protection is not storing it) |
+| Public, non-sensitive content | none | no encryption theatre |
+
+Password rules:
+
+- Unique random salt per password; use the library's built-in salt handling. A pepper is optional defence-in-depth, stored in a vault **separate from the database**, never beside the hashes.
+- Fallbacks in order: scrypt `N=2^17, r=8, p=1`; legacy bcrypt cost ≥ 10 with a 72-byte input cap; PBKDF2-HMAC-SHA256 ≥ 600,000 iterations only when FIPS is required.
+- Accept Unicode, null bytes and long passwords without truncation; target hash time under one second on the real server.
+- Store algorithm + parameters with the hash (PHC string), allow old and new hashes during migration, and re-hash on next login. Changing a pepper requires a password reset.
+- Never encrypt a password to recover plaintext; change the architecture instead.
+
+Encryption rules:
+
+- Symmetric AES ≥ 128 bits (prefer 256) in an **authenticated** mode — GCM/CCM first. Let the library generate IVs; use a CSPRNG (`crypto.randomBytes`, Python `secrets`, `SecureRandom`, etc.), never `Math.random()`/`random()` for security values.
+- No custom algorithms, no ECB. Asymmetric: maintained HPKE library (or RSA ≥ 2048 with OAEP) — do not hand-roll padding.
+- Keys come from a vault/KMS/HSM when available; never in source, git, or committed config. Prefer a vault over environment variables (they leak via `/proc/self/environ`, debug pages and CI logs). Keep keys separate from the encrypted data.
+- Have a rotation plan **before** release: mark ciphertext with a key id or re-encrypt, and document the owner and cryptoperiod.
+- No plaintext in logs, errors, analytics or backups. Encrypted fields still need access control — ciphertext in a URL is not authorisation (defence in depth).
+
+Evidence required before claiming "encrypted" or "hashed" (§26):
+
+- A database dump contains no plaintext password or secret; grep the repo and logs for the test secret → zero hits.
+- A known password verifies, a wrong one fails, and two identical passwords produce different hashes.
+- A wrong/missing key cannot decrypt; a tampered ciphertext fails authentication.
+- The doc states algorithm + parameters + key location + rotation owner without revealing the key.
 
 ---
 
@@ -992,7 +1058,7 @@ Do not install all of them. Choose per actual need.
 
 ## 16.3 What must be tested
 
-Happy path · invalid input · missing fields · unauthorized access · cross-user isolation · empty state · error state · network failure · timeout · repeated/cloned requests · concurrent writes · pagination edges · large input · unicode/RTL · responsive breakpoints · keyboard path · consent accepted/rejected/withdrawn · permission granted/denied · production build.
+Happy path · invalid input · missing fields · unauthorized access · cross-user isolation · empty state · error state · network failure · timeout · repeated/cloned requests · concurrent writes · pagination edges · large input · unicode/RTL · responsive breakpoints · keyboard path · consent accepted/rejected/withdrawn · permission granted/denied · seeded avatar renders deterministically (§9.11) · DB dump contains no plaintext secret (§13.6) · production build.
 
 ## 16.4 E2E realism
 
@@ -1045,6 +1111,7 @@ Broken imports · missing deps · runtime/type errors · state bugs · race cond
 
 # 18. DATABASE & DATA SAFETY
 
+- Choose hash vs encrypt per field with §13.6; document it in `DATABASE_SCHEMA.md`.
 - Inspect the existing schema first. Document tables, relations, constraints, indexes.
 - Migrations only, versioned, reversible where feasible, tested on a copy.
 - Backups before destructive changes; verify restore at least once.
@@ -1315,7 +1382,7 @@ Bypass a permission prompt · fake access · claim an action succeeded when the 
 
 ## 26.1 Forbidden statements without evidence
 
-"Tests pass" · "build works" · "deployed" · "secure" · "optimized" · "fully accessible" · "100% complete" · "production-ready" · "license is fine" · "free tier allows X" · "benchmark shows Y" · "GDPR/DPDP/CCPA compliant" · "certified" · "audited" · "we never track you" · "consent obtained".
+"Tests pass" · "build works" · "deployed" · "secure" · "optimized" · "fully accessible" · "100% complete" · "production-ready" · "license is fine" · "free tier allows X" · "benchmark shows Y" · "GDPR/DPDP/CCPA compliant" · "certified" · "audited" · "we never track you" · "consent obtained" · "encrypted at rest" · "passwords are hashed" · "avatar licence checked".
 
 ## 26.2 Required claim format
 
@@ -1504,6 +1571,9 @@ DELIVER: PRD · DESIGN · TECH_STACK · TASKS · ARCHITECTURE · DATABASE_SCHEMA
 
 LEGAL: consent before optional cookies · deny path works · no pre-ticked boxes
        real data inventory · policies are DRAFT until reviewed · no fake compliance
+
+AVATAR: DiceBear v11 only when needed · read llms.txt · CSPRNG seed · check style licence
+DATA:   passwords = Argon2id · PII shown back = AES-GCM · keys in vault · no plaintext logs
 
 VERSION: pnpm run version:bump <patch|minor|major|alpha|beta|rc|stable>
          pnpm run version:sync
