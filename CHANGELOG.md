@@ -8,7 +8,18 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed
+
+- `ATLAS-MASTER-PROMPT.md` — now genuinely drop-in for any project: removed hard-coded
+  Hinglish/₹0/Windows-8 GB defaults, added a mode-aware start rule (brownfield and repair
+  begin with findings and real command output, not a nine-point brief), defined "major
+  decision" so small tasks do not stall in research, and added §1.2 — the eleven-file
+  deliverables contract (`PRD`, `DESIGN`, `TECH_STACK`, `TASKS`, `ARCHITECTURE`,
+  `DATABASE_SCHEMA`, `API_DOCUMENTATION`, `USER_FLOWS`, `ACCEPTANCE_CRITERIA`, `README`,
+  `.env.example`) with read-before-write, `UNKNOWN`-instead-of-invention, dated sources and
+  no-secrets rules. §14.9 now directs projects with the installed skill to the existing
+  single-file `scripts/version.mjs` instead of a seven-file layout that does not exist.
+  Added §0.6 — eight hard gates that survive context pressure.
 
 ## [1.2.0] - 2026-11-25
 
