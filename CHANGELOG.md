@@ -39,6 +39,12 @@ project uses [Semantic Versioning](https://semver.org/). Versions are generated 
   lookups, keys in a vault, rotation plan, and evidence before claiming "encrypted". Both
   are conditional — a project writes "not applicable" when it has no such need. Verified
   against vendor sources on 2026-11-27.
+- `ATLAS-MASTER-PROMPT.md` — §13.7 adds a worked secret example, `ALTCHA_HMAC_KEY`:
+  classification **Secret (encrypted at rest)**, vault-only storage, `.env.example` placeholder
+  only, CSPRNG-generated 32+ characters as a *project policy* (explicitly not attributed to
+  the vendor, whose docs only require a non-empty `hmacSignatureSecret`), rotation, replay and
+  expiry rules, and the "not applicable when the provider signs" branch. Verified against
+  ALTCHA's own docs and `altcha-lib` on 2026-11-27.
 
 ## [1.2.0] - 2026-11-25
 
